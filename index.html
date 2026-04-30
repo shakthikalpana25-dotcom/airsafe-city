@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AirSafe City</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background-color: #f0f4f8;
+    }
+
+    nav {
+      background-color: #1a73e8;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      color: white;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      margin-left: 15px;
+      font-size: 14px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #1a73e8, #0d47a1);
+      color: white;
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .hero h1 {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      font-size: 16px;
+      margin-bottom: 30px;
+      opacity: 0.9;
+    }
+
+    .search-bar {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .search-bar input {
+      padding: 12px 20px;
+      border-radius: 25px;
+      border: none;
+      width: 250px;
+      font-size: 16px;
+    }
+
+    .search-bar button {
+      padding: 12px 25px;
+      background-color: #34a853;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .aqi-card {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      margin: 30px auto;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .aqi-number {
+      font-size: 80px;
+      font-weight: bold;
+      color: #34a853;
+    }
+
+    .aqi-label {
+      font-size: 24px;
+      font-weight: bold;
+      color: #34a853;
+      margin-bottom: 10px;
+    }
+
+    .aqi-city {
+      font-size: 18px;
+      color: #555;
+    }
+
+    .health-section {
+      background: white;
+      padding: 30px 20px;
+      margin: 20px;
+      border-radius: 15px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+
+    .health-section h2 {
+      color: #1a73e8;
+      margin-bottom: 15px;
+    }
+
+    .health-tip {
+      background: #e8f5e9;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      border-left: 4px solid #34a853;
+    }
+
+    footer {
+      background-color: #1a73e8;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <div class="logo">🌬️ AirSafe City</div>
+    <div class="nav-links">
+      <a href="#">Home</a>
+      <a href="#">AQI Map</a>
+      <a href="#">Health Plan</a>
+      <a href="#">Report</a>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <div class="hero">
+    <h1>Breathe Safe. Live Smart.</h1>
+    <p>Real-time air quality monitoring for every Indian city</p>
+    <div class="search-bar">
+      <input type="text" placeholder="Enter city name..." id="cityInput">
+      <button onclick="checkAQI()">Check AQI</button>
+    </div>
+  </div>
+
+  <!-- AQI CARD -->
+  <!-- aqi card - main display -->
+<div class="aqi-card">
+  <div class="aqi-number" id="aqiNumber">--</div>
+  <div class="aqi-label" id="aqiLabel">Enter a city above</div>
+  <div class="aqi-city" id="aqiCity">📍 Waiting...</div>
+</div>
+
+  <!-- HEALTH TIPS -->
+  <div class="health-section">
+    <h2>💊 Health Recommendations</h2>
+    <div class="health-tip">😷 Sensitive groups should wear a mask outdoors</div>
+    <div class="health-tip">🏃 Avoid heavy outdoor exercise today</div>
+    <div class="health-tip">🪟 Keep windows closed during peak hours</div>
+    <div class="health-tip">💧 Drink plenty of water to flush toxins</div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 AirSafe City | Team Vertex Systems | WitchHunt Hackathon</p>
+  </footer>
+<script>
+// my waqi token
+const token = "c57409aae7cb03d5edd97a5fcb3cc3206320b162";
+
+// runs when user clicks Check AQI button
+async function checkAQI() {
+  
+  // get what user typed
+  let city = document.getElementById("cityInput").value;
+  
+  // if nothing typed, show alert
+  if (!city) {
+    alert("Please enter a city name!");
+    return;
+  }
+
+  // show loading message
+  document.getElementById("aqiNumber").innerText = "...";
+  document.getElementById("aqiLabel").innerText = "Loading...";
+  document.getElementById("aqiCity").innerText = "Fetching data";
+
+  try {
+    // call waqi api
+    let response = await fetch(`https://api.waqi.info/feed/${city}/?token=${token}`);
+    let data = await response.json();
+
+    if (data.status === "ok") {
+      let aqi = data.data.aqi;
+      let cityName = data.data.city.name;
+
+      // show the aqi number
+      document.getElementById("aqiNumber").innerText = aqi;
+      document.getElementById("aqiCity").innerText = "📍 " + cityName;
+
+      // color and label based on aqi level
+      if (aqi <= 50) {
+        document.getElementById("aqiLabel").innerText = "Good 😊";
+        document.getElementById("aqiNumber").style.color = "#34a853";
+        document.getElementById("aqiLabel").style.color = "#34a853";
+      } else if (aqi <= 100) {
+        document.getElementById("aqiLabel").innerText = "Moderate 😐";
+        document.getElementById("aqiNumber").style.color = "#fbbc04";
+        document.getElementById("aqiLabel").style.color = "#fbbc04";
+      } else if (aqi <= 150) {
+        document.getElementById("aqiLabel").innerText = "Unhealthy for Some 😷";
+        document.getElementById("aqiNumber").style.color = "#ff9800";
+        document.getElementById("aqiLabel").style.color = "#ff9800";
+      } else if (aqi <= 200) {
+        document.getElementById("aqiLabel").innerText = "Unhealthy 🤧";
+        document.getElementById("aqiNumber").style.color = "#f44336";
+        document.getElementById("aqiLabel").style.color = "#f44336";
+      } else if (aqi <= 300) {
+        document.getElementById("aqiLabel").innerText = "Very Unhealthy 😰";
+        document.getElementById("aqiNumber").style.color = "#9c27b0";
+        document.getElementById("aqiLabel").style.color = "#9c27b0";
+      } else {
+        document.getElementById("aqiLabel").innerText = "Hazardous ☠️";
+        document.getElementById("aqiNumber").style.color = "#7d0023";
+        document.getElementById("aqiLabel").style.color = "#7d0023";
+      }
+
+    } else {
+      // city not found
+      document.getElementById("aqiNumber").innerText = "N/A";
+      document.getElementById("aqiLabel").innerText = "City not found";
+      document.getElementById("aqiCity").innerText = "Try Delhi, Mumbai or Bengaluru";
+    }
+
+  } catch (error) {
+    // something went wrong
+    document.getElementById("aqiLabel").innerText = "Error fetching data";
+  }
+}
+</script>
+</body>
+</html>
