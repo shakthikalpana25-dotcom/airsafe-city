@@ -129,6 +129,124 @@
       border-left: 4px solid #34a853;
     }
 
+    .chatbot-section {
+      background: white;
+      padding: 30px 20px;
+      margin: 20px;
+      border-radius: 15px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+
+    .chatbot-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 5px;
+    }
+
+    .chatbot-header h2 {
+      color: #1a73e8;
+    }
+
+    .chatbot-name {
+      background: #1a73e8;
+      color: white;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .chat-subtitle {
+      color: #777;
+      margin-bottom: 15px;
+      font-size: 14px;
+    }
+
+    .chat-box {
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 15px;
+      height: 250px;
+      overflow-y: auto;
+      margin-bottom: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .message {
+      padding: 10px 15px;
+      border-radius: 15px;
+      max-width: 80%;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .message.user {
+      background: #1a73e8;
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+
+    .message.bot {
+      background: white;
+      color: #333;
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+
+    .message.typing {
+      background: white;
+      color: #999;
+      align-self: flex-start;
+      font-style: italic;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+
+    .quick-asks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+
+    .quick-asks button {
+      background: #e8f0fe;
+      color: #1a73e8;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .chat-input-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .chat-input-row input {
+      flex: 1;
+      padding: 12px 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 25px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .chat-input-row button {
+      padding: 12px 20px;
+      background: #1a73e8;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
     footer {
       background-color: #1a73e8;
       color: white;
@@ -169,12 +287,34 @@
   </div>
 
   <!-- HEALTH TIPS -->
-  <div class="health-section">
+  <div class="health-section" id="healthSection">
     <h2>💊 Health Recommendations</h2>
-    <div class="health-tip">😷 Sensitive groups should wear a mask outdoors</div>
-    <div class="health-tip">🏃 Avoid heavy outdoor exercise today</div>
-    <div class="health-tip">🪟 Keep windows closed during peak hours</div>
-    <div class="health-tip">💧 Drink plenty of water to flush toxins</div>
+    <div class="health-tip">🔍 Search a city above to get AI health tips</div>
+  </div>
+
+  <!-- VAAYU AI CHATBOT -->
+  <div class="chatbot-section">
+    <div class="chatbot-header">
+      <h2>🤖 Ask</h2>
+      <span class="chatbot-name">Vaayu AI</span>
+    </div>
+    <p class="chat-subtitle">Your personal air quality assistant</p>
+
+    <div class="chat-box" id="chatBox">
+      <div class="message bot">👋 Hi! I'm Vaayu AI. Ask me anything about air quality, pollution, or health tips!</div>
+    </div>
+
+    <div class="quick-asks">
+      <button onclick="quickAsk('What is AQI?')">What is AQI?</button>
+      <button onclick="quickAsk('Is it safe to go outside today?')">Safe outside?</button>
+      <button onclick="quickAsk('What causes air pollution?')">Causes of pollution</button>
+      <button onclick="quickAsk('How to protect myself from pollution?')">Protect myself</button>
+    </div>
+
+    <div class="chat-input-row">
+      <input type="text" id="chatInput" placeholder="Ask Vaayu AI..." onkeypress="handleEnter(event)">
+      <button onclick="sendMessage()">Send</button>
+    </div>
   </div>
 
   <!-- FOOTER -->
@@ -184,70 +324,17 @@
 
   <script>
     const token = "c57409aae7cb03d5edd97a5fcb3cc3206320b162";
+    const geminiKey = "AIzaSyBEcvcPIsx151t8u6Yz3CWrxtu1-E7QoMw";
 
+    // Enter key for city search
     document.getElementById("cityInput").addEventListener("keypress", function(e) {
       if (e.key === "Enter") checkAQI();
     });
 
-    function updateHealthTips(aqi) {
-      const tips = {
-        good: [
-          "😊 Air is clean! Great day for outdoor activities",
-          "🏃 Perfect conditions for jogging or cycling",
-          "🪟 Open your windows and enjoy fresh air",
-          "🌿 A good day to go for a nature walk"
-        ],
-        moderate: [
-          "😐 Air quality is acceptable for most people",
-          "🤧 Unusually sensitive people should limit outdoor time",
-          "🪟 You may open windows but monitor the air",
-          "💧 Stay hydrated throughout the day"
-        ],
-        unhealthySome: [
-          "😷 Sensitive groups (elderly, children) wear a mask",
-          "🏃 Avoid heavy outdoor exercise today",
-          "🪟 Keep windows closed during peak hours",
-          "💧 Drink plenty of water to flush toxins"
-        ],
-        unhealthy: [
-          "😷 Everyone should wear a mask outdoors",
-          "🚫 Avoid all outdoor exercise today",
-          "🪟 Keep all windows and doors closed",
-          "🏠 Work from home if possible today"
-        ],
-        veryUnhealthy: [
-          "⚠️ Health alert! Minimize all outdoor activity",
-          "😷 N95 mask required if going outside",
-          "🏠 Stay indoors — air purifier recommended",
-          "🚑 Seek medical help if breathing feels difficult"
-        ],
-        hazardous: [
-          "☠️ Emergency conditions — stay indoors completely",
-          "🚨 Avoid ALL outdoor activity without exception",
-          "🏥 People with conditions should call their doctor",
-          "😷 If forced outside, use industrial-grade respirator"
-        ]
-      };
-
-      let selected;
-      if (aqi <= 50)       selected = tips.good;
-      else if (aqi <= 100) selected = tips.moderate;
-      else if (aqi <= 150) selected = tips.unhealthySome;
-      else if (aqi <= 200) selected = tips.unhealthy;
-      else if (aqi <= 300) selected = tips.veryUnhealthy;
-      else                 selected = tips.hazardous;
-
-      const section = document.querySelector(".health-section");
-      section.innerHTML = "<h2>💊 Health Recommendations</h2>" +
-        selected.map(tip => "<div class='health-tip'>" + tip + "</div>").join("");
-    }
-
+    // ── AQI CHECK ──────────────────────────────────────────
     async function checkAQI() {
       let city = document.getElementById("cityInput").value.trim();
-      if (!city) {
-        alert("Please enter a city name!");
-        return;
-      }
+      if (!city) { alert("Please enter a city name!"); return; }
 
       document.getElementById("aqiNumber").innerText = "⏳";
       document.getElementById("aqiLabel").innerText = "Fetching...";
@@ -276,7 +363,7 @@
           document.getElementById("aqiNumber").style.color = color;
           document.getElementById("aqiLabel").style.color = color;
 
-          updateHealthTips(aqi);
+          updateHealthTips(aqi, cityName);
 
         } else {
           document.getElementById("aqiNumber").innerText = "N/A";
@@ -288,6 +375,102 @@
         document.getElementById("aqiNumber").innerText = "!";
         document.getElementById("aqiLabel").innerText = "Error fetching data";
         document.getElementById("aqiCity").innerText = "Check internet connection";
+      }
+    }
+
+    // ── AI HEALTH TIPS ─────────────────────────────────────
+    async function updateHealthTips(aqi, cityName) {
+      document.getElementById("healthSection").innerHTML =
+        "<h2>💊 Health Recommendations</h2>" +
+        "<div class='health-tip'>🤖 Vaayu AI is generating tips for " + cityName + " (AQI " + aqi + ")...</div>";
+
+      try {
+        const response = await fetch(
+          "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + geminiKey,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contents: [{
+                parts: [{
+                  text: "The AQI in " + cityName + " is " + aqi + ". Give exactly 4 short health tips for this AQI level. Return only 4 lines, each starting with a relevant emoji. No numbering, no extra text, no headings. Keep each tip under 15 words."
+                }]
+              }]
+            })
+          }
+        );
+
+        const data = await response.json();
+        const reply = data.candidates[0].content.parts[0].text;
+        const tips = reply.trim().split("\n").filter(line => line.trim() !== "");
+
+        document.getElementById("healthSection").innerHTML =
+          "<h2>💊 AI Health Tips for " + cityName + " (AQI " + aqi + ")</h2>" +
+          tips.map(tip => "<div class='health-tip'>" + tip + "</div>").join("");
+
+      } catch (error) {
+        document.getElementById("healthSection").innerHTML =
+          "<h2>💊 Health Recommendations</h2>" +
+          "<div class='health-tip'>⚠️ Could not load AI tips. Check your connection.</div>";
+      }
+    }
+
+    // ── VAAYU AI CHATBOT ───────────────────────────────────
+    function handleEnter(event) {
+      if (event.key === "Enter") sendMessage();
+    }
+
+    function quickAsk(question) {
+      document.getElementById("chatInput").value = question;
+      sendMessage();
+    }
+
+    function addMessage(text, sender) {
+      const chatBox = document.getElementById("chatBox");
+      const msg = document.createElement("div");
+      msg.classList.add("message", sender);
+      if (sender === "typing") msg.id = "typingMsg";
+      msg.innerText = text;
+      chatBox.appendChild(msg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById("chatInput");
+      const message = input.value.trim();
+      if (!message) return;
+
+      addMessage(message, "user");
+      input.value = "";
+      addMessage("Vaayu is thinking...", "typing");
+
+      try {
+        const response = await fetch(
+          "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + geminiKey,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contents: [{
+                parts: [{
+                  text: "You are Vaayu AI, a helpful air quality and pollution assistant for AirSafe City, an Indian air quality app. Answer only questions related to air quality, AQI, pollution, health effects of pollution, and safety tips. Keep answers short and friendly. User question: " + message
+                }]
+              }]
+            })
+          }
+        );
+
+        const data = await response.json();
+        const typing = document.getElementById("typingMsg");
+        if (typing) typing.remove();
+
+        const reply = data.candidates[0].content.parts[0].text;
+        addMessage(reply, "bot");
+
+      } catch (error) {
+        const typing = document.getElementById("typingMsg");
+        if (typing) typing.remove();
+        addMessage("Sorry, I couldn't connect. Please try again!", "bot");
       }
     }
   </script>
