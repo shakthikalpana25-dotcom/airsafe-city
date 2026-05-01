@@ -324,40 +324,109 @@
 
   <script>
     const waqiToken = "c57409aae7cb03d5edd97a5fcb3cc3206320b162";
-    const geminiKey = "AIzaSyBEcvcPIsx151t8u6Yz3CWrxtu1-E7QoMw";
     const openRouterKey = "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";
+    const proxy = "https://corsproxy.io/?";
 
     // Enter key for city search
     document.getElementById("cityInput").addEventListener("keypress", function(e) {
       if (e.key === "Enter") checkAQI();
     });
 
-    // ── CALL AI (Gemini first, OpenRouter fallback) ────────
+    // ── SMART FALLBACK TIPS ────────────────────────────────
+    const smartTips = {
+      good: [
+        "😊 Air is clean! Great day for outdoor activities",
+        "🏃 Perfect conditions for jogging or cycling",
+        "🪟 Open your windows and enjoy fresh air",
+        "🌿 A wonderful day for a nature walk"
+      ],
+      moderate: [
+        "😐 Air is acceptable but sensitive people take care",
+        "🤧 Limit outdoor time if you have asthma or allergies",
+        "💧 Stay hydrated — drink at least 8 glasses of water",
+        "🪟 Open windows briefly but monitor air quality"
+      ],
+      unhealthySome: [
+        "😷 Children and elderly should wear masks outdoors",
+        "🏃 Avoid heavy exercise outside today",
+        "🪟 Keep windows closed during peak traffic hours",
+        "💊 Keep inhalers handy if you have respiratory issues"
+      ],
+      unhealthy: [
+        "😷 Everyone must wear a mask outdoors today",
+        "🚫 Cancel all outdoor sports and exercise",
+        "🏠 Work from home if possible today",
+        "🌿 Use indoor plants to help purify your home air"
+      ],
+      veryUnhealthy: [
+        "⚠️ Serious health risk — stay indoors as much as possible",
+        "😷 N95 mask is required if you must go outside",
+        "🏠 Run an air purifier indoors if you have one",
+        "🚑 Call a doctor if you feel breathing difficulty"
+      ],
+      hazardous: [
+        "☠️ Emergency level — do not go outside at all",
+        "🚨 Seal windows and doors to block outside air",
+        "🏥 Vulnerable people should seek medical attention",
+        "😷 Industrial respirator needed if forced to go out"
+      ]
+    };
+
+    function getSmartTips(aqi) {
+      if (aqi <= 50)       return smartTips.good;
+      else if (aqi <= 100) return smartTips.moderate;
+      else if (aqi <= 150) return smartTips.unhealthySome;
+      else if (aqi <= 200) return smartTips.unhealthy;
+      else if (aqi <= 300) return smartTips.veryUnhealthy;
+      else                 return smartTips.hazardous;
+    }
+
+    // ── SMART FALLBACK CHATBOT ─────────────────────────────
+    function getSmartChatReply(message) {
+      const msg = message.toLowerCase();
+
+      if (msg.includes("aqi") && (msg.includes("what") || msg.includes("mean"))) {
+        return "🌬️ AQI stands for Air Quality Index. It measures how clean or polluted the air is on a scale of 0-500. Lower is better! 0-50 is Good, 51-100 is Moderate, and above 150 starts becoming unhealthy.";
+      } else if (msg.includes("safe") || msg.includes("outside") || msg.includes("go out")) {
+        return "🏃 Check the AQI for your city above! If it's below 100 it's generally safe. Above 150, sensitive groups should stay indoors. Above 200, everyone should avoid going outside.";
+      } else if (msg.includes("cause") || msg.includes("pollution") || msg.includes("why")) {
+        return "🏭 Air pollution in Indian cities is mainly caused by vehicle exhaust, industrial emissions, construction dust, crop burning, and garbage burning. Festivals with firecrackers also spike pollution temporarily.";
+      } else if (msg.includes("protect") || msg.includes("safe") || msg.includes("prevent")) {
+        return "🛡️ To protect yourself: wear an N95 mask outdoors, avoid peak traffic hours, keep windows closed on bad air days, use indoor plants like aloe vera, stay hydrated, and check AQI daily on AirSafe City!";
+      } else if (msg.includes("mask") || msg.includes("n95")) {
+        return "😷 For air pollution, N95 masks are best — they filter 95% of fine particles. Surgical masks only block large particles. On days with AQI above 150, always wear an N95 before going outside.";
+      } else if (msg.includes("pm2.5") || msg.includes("pm10") || msg.includes("pm 2.5")) {
+        return "🔬 PM2.5 are tiny particles 2.5 micrometers or smaller — so small they enter your bloodstream! PM10 are slightly larger. Both are dangerous at high levels and are major components measured in AQI.";
+      } else if (msg.includes("child") || msg.includes("baby") || msg.includes("kid")) {
+        return "👶 Children are more vulnerable to air pollution as their lungs are still developing. On days with AQI above 100, keep children indoors, avoid outdoor play, and ensure good ventilation at home.";
+      } else if (msg.includes("plant") || msg.includes("indoor")) {
+        return "🌿 Great idea! Indoor plants that help purify air include Aloe Vera, Spider Plant, Peace Lily, and Money Plant. They absorb some toxins and increase oxygen levels inside your home.";
+      } else if (msg.includes("hello") || msg.includes("hi") || msg.includes("hey")) {
+        return "👋 Hello! I'm Vaayu AI, your air quality assistant. Ask me about AQI levels, pollution causes, health tips, or how to protect yourself from bad air!";
+      } else if (msg.includes("thank")) {
+        return "😊 You're welcome! Stay safe and keep checking AirSafe City for daily air quality updates. Breathe safe, live smart! 🌬️";
+      } else if (msg.includes("bangalore") || msg.includes("bengaluru")) {
+        return "🏙️ Bengaluru's AQI is usually Moderate (50-100). Main sources are vehicle pollution and construction dust. Use the search above to check today's live AQI for Bengaluru!";
+      } else if (msg.includes("delhi")) {
+        return "🏙️ Delhi often has Very Unhealthy to Hazardous AQI, especially in winter due to crop burning and cold air trapping pollution. Always check live AQI before going out in Delhi!";
+      } else if (msg.includes("mumbai")) {
+        return "🏙️ Mumbai's AQI is generally Moderate but can spike near industrial areas. Sea breeze helps disperse pollution. Check the live AQI above for today's reading!";
+      } else {
+        return "🤔 That's a great question about air quality! For the most accurate answer, I recommend searching your city's AQI above and checking the AI health tips. You can also ask me about AQI, masks, pollution causes, or how to stay safe!";
+      }
+    }
+
+    // ── CALL AI (proxy → fallback) ─────────────────────────
     async function callAI(prompt) {
-      // Try Gemini first
       try {
-        const res = await fetch(
-          "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + geminiKey,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: prompt }] }]
-            })
-          }
-        );
-        const data = await res.json();
-        if (data.candidates && data.candidates[0]) {
-          return data.candidates[0].content.parts[0].text;
-        }
-        throw new Error("Gemini failed");
-      } catch (e) {
-        // Fallback to OpenRouter
-        const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        const url = "https://openrouter.ai/api/v1/chat/completions";
+        const res = await fetch(proxy + encodeURIComponent(url), {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + openRouterKey
+            "Authorization": "Bearer " + openRouterKey,
+            "HTTP-Referer": "https://shakthikalpana25-dotcom.github.io",
+            "X-Title": "AirSafe City"
           },
           body: JSON.stringify({
             model: "meta-llama/llama-3.1-8b-instruct:free",
@@ -365,7 +434,12 @@
           })
         });
         const data = await res.json();
-        return data.choices[0].message.content;
+        if (data.choices && data.choices[0]) {
+          return { success: true, text: data.choices[0].message.content };
+        }
+        throw new Error("No response");
+      } catch (e) {
+        return { success: false, text: null };
       }
     }
 
@@ -416,26 +490,25 @@
       }
     }
 
-    // ── AI HEALTH TIPS ─────────────────────────────────────
+    // ── AI HEALTH TIPS (proxy → smart fallback) ────────────
     async function updateHealthTips(aqi, cityName) {
       document.getElementById("healthSection").innerHTML =
         "<h2>💊 Health Recommendations</h2>" +
-        "<div class='health-tip'>🤖 Vaayu AI is generating tips for " + cityName + " (AQI " + aqi + ")...</div>";
+        "<div class='health-tip'>🤖 Vaayu AI is analyzing air quality for " + cityName + "...</div>";
 
-      try {
-        const prompt = "The AQI in " + cityName + " is " + aqi + ". Give exactly 4 short health tips for this AQI level. Return only 4 lines, each starting with a relevant emoji. No numbering, no extra text, no headings. Keep each tip under 15 words.";
-        const reply = await callAI(prompt);
-        const tips = reply.trim().split("\n").filter(line => line.trim() !== "");
+      const prompt = "The AQI in " + cityName + " is " + aqi + ". Give exactly 4 short health tips for this AQI level. Return only 4 lines, each starting with a relevant emoji. No numbering, no extra text, no headings. Keep each tip under 15 words.";
+      const result = await callAI(prompt);
 
-        document.getElementById("healthSection").innerHTML =
-          "<h2>💊 AI Health Tips for " + cityName + " (AQI " + aqi + ")</h2>" +
-          tips.map(tip => "<div class='health-tip'>" + tip + "</div>").join("");
-
-      } catch (error) {
-        document.getElementById("healthSection").innerHTML =
-          "<h2>💊 Health Recommendations</h2>" +
-          "<div class='health-tip'>⚠️ Could not load AI tips. Check your connection.</div>";
+      let tips;
+      if (result.success) {
+        tips = result.text.trim().split("\n").filter(line => line.trim() !== "");
+      } else {
+        tips = getSmartTips(aqi);
       }
+
+      document.getElementById("healthSection").innerHTML =
+        "<h2>💊 AI Health Tips for " + cityName + " (AQI " + aqi + ")</h2>" +
+        tips.map(tip => "<div class='health-tip'>" + tip + "</div>").join("");
     }
 
     // ── VAAYU AI CHATBOT ───────────────────────────────────
@@ -467,18 +540,16 @@
       input.value = "";
       addMessage("Vaayu is thinking...", "typing");
 
-      try {
-        const prompt = "You are Vaayu AI, a helpful air quality and pollution assistant for AirSafe City, an Indian air quality app. Answer only questions related to air quality, AQI, pollution, health effects of pollution, and safety tips. Keep answers short and friendly. User question: " + message;
-        const reply = await callAI(prompt);
+      const prompt = "You are Vaayu AI, a helpful air quality assistant for AirSafe City, an Indian air quality app. Answer only about air quality, AQI, pollution, health effects, and safety tips. Keep answers short and friendly. Question: " + message;
+      const result = await callAI(prompt);
 
-        const typing = document.getElementById("typingMsg");
-        if (typing) typing.remove();
-        addMessage(reply, "bot");
+      const typing = document.getElementById("typingMsg");
+      if (typing) typing.remove();
 
-      } catch (error) {
-        const typing = document.getElementById("typingMsg");
-        if (typing) typing.remove();
-        addMessage("Sorry, I couldn't connect. Please try again!", "bot");
+      if (result.success) {
+        addMessage(result.text, "bot");
+      } else {
+        addMessage(getSmartChatReply(message), "bot");
       }
     }
   </script>
