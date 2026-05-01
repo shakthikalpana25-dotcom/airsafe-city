@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -68,6 +67,7 @@
       border: none;
       width: 250px;
       font-size: 16px;
+      outline: none;
     }
 
     .search-bar button {
@@ -129,113 +129,6 @@
       border-left: 4px solid #34a853;
     }
 
-    /* chatbot section */
-    .chatbot-section {
-      background: white;
-      padding: 30px 20px;
-      margin: 20px;
-      border-radius: 15px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-    }
-
-    .chatbot-header {
-      display: flex;
-      align-items: center;
-      margin-bottom: 5px;
-      gap: 10px;
-    }
-
-    .chatbot-header h2 {
-      color: #1a73e8;
-    }
-
-    .chatbot-name {
-      background: #1a73e8;
-      color: white;
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: bold;
-    }
-
-    .chat-subtitle {
-      color: #777;
-      margin-bottom: 15px;
-      font-size: 14px;
-    }
-
-    .chat-box {
-      background: #f8f9fa;
-      border-radius: 10px;
-      padding: 15px;
-      height: 250px;
-      overflow-y: auto;
-      margin-bottom: 15px;
-    }
-
-    .chat-message {
-      padding: 10px 15px;
-      border-radius: 15px;
-      margin-bottom: 10px;
-      max-width: 85%;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .bot-message {
-      background: #e3f2fd;
-      color: #1a73e8;
-      border-bottom-left-radius: 5px;
-    }
-
-    .user-message {
-      background: #1a73e8;
-      color: white;
-      margin-left: auto;
-      border-bottom-right-radius: 5px;
-    }
-
-    .chat-input-area {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 15px;
-    }
-
-    .chat-input-area input {
-      flex: 1;
-      padding: 12px 15px;
-      border: 2px solid #e0e0e0;
-      border-radius: 25px;
-      font-size: 14px;
-      outline: none;
-    }
-
-    .chat-input-area button {
-      padding: 12px 20px;
-      background: #1a73e8;
-      color: white;
-      border: none;
-      border-radius: 25px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .quick-questions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .quick-questions button {
-      padding: 8px 15px;
-      background: #e8f0fe;
-      color: #1a73e8;
-      border: none;
-      border-radius: 20px;
-      font-size: 13px;
-      cursor: pointer;
-    }
-
     footer {
       background-color: #1a73e8;
       color: white;
@@ -247,7 +140,7 @@
 </head>
 <body>
 
-  <!-- navbar -->
+  <!-- NAVBAR -->
   <nav>
     <div class="logo">🌬️ AirSafe City</div>
     <div class="nav-links">
@@ -258,279 +151,146 @@
     </div>
   </nav>
 
-  <!-- hero section -->
+  <!-- HERO SECTION -->
   <div class="hero">
     <h1>Breathe Safe. Live Smart.</h1>
     <p>Real-time air quality monitoring for every Indian city</p>
     <div class="search-bar">
-      <input type="text" placeholder="eg: Delhi, Mumbai, Bengaluru" id="cityInput">
+      <input type="text" placeholder="Enter city name..." id="cityInput">
       <button onclick="checkAQI()">Check AQI</button>
     </div>
   </div>
 
-  <!-- aqi card - main display -->
+  <!-- AQI CARD -->
   <div class="aqi-card">
     <div class="aqi-number" id="aqiNumber">--</div>
     <div class="aqi-label" id="aqiLabel">Enter a city above</div>
     <div class="aqi-city" id="aqiCity">📍 Waiting...</div>
   </div>
 
-  <!-- health tips - updated by AI -->
-  <div class="health-section" id="healthSection">
+  <!-- HEALTH TIPS -->
+  <div class="health-section">
     <h2>💊 Health Recommendations</h2>
-    <div class="health-tip">😷 Search a city above to get AI powered health tips!</div>
+    <div class="health-tip">😷 Sensitive groups should wear a mask outdoors</div>
+    <div class="health-tip">🏃 Avoid heavy outdoor exercise today</div>
+    <div class="health-tip">🪟 Keep windows closed during peak hours</div>
+    <div class="health-tip">💧 Drink plenty of water to flush toxins</div>
   </div>
 
-  <!-- VAAYU AI chatbot section -->
-  <div class="chatbot-section">
-    <div class="chatbot-header">
-      <h2>🤖 Meet</h2>
-      <span class="chatbot-name">VAAYU AI</span>
-    </div>
-    <p class="chat-subtitle">Your personal air quality assistant — ask me anything!</p>
-
-    <div class="chat-box" id="chatBox">
-      <div class="chat-message bot-message">
-        👋 Hi! I'm Vaayu, your AirSafe AI assistant! Ask me about air quality, health tips, or pollution in any Indian city!
-      </div>
-    </div>
-
-    <div class="chat-input-area">
-      <input type="text" id="chatInput" placeholder="eg: Is it safe to go outside today?" onkeypress="handleEnter(event)">
-      <button onclick="sendMessage()">Send</button>
-    </div>
-
-    <!-- quick question buttons -->
-    <div class="quick-questions">
-      <button onclick="quickAsk('Hi!')">👋 Hi!</button>
-      <button onclick="quickAsk('What is AQI?')">What is AQI?</button>
-      <button onclick="quickAsk('What is PM2.5?')">What is PM2.5?</button>
-      <button onclick="quickAsk('Is it safe for children?')">Safe for children?</button>
-      <button onclick="quickAsk('How to reduce pollution?')">Reduce pollution?</button>
-    </div>
-  </div>
-
-  <!-- footer -->
+  <!-- FOOTER -->
   <footer>
     <p>© 2026 AirSafe City | Team Vertex Systems | WitchHunt Hackathon</p>
   </footer>
 
-<script>
-  // api keys
-  const token = "c57409aae7cb03d5edd97a5fcb3cc3206320b162";
-  const geminiKey = "AIzaSyBEcvcPIsx151t8u6Yz3CWrxtu1-E7QoMw";
+  <script>
+    const token = "c57409aae7cb03d5edd97a5fcb3cc3206320b162";
 
-  // FAQ answers for common questions - instant responses
-  const faqAnswers = {
-    "hi": "👋 Hello! I'm Vaayu, AirSafe City's AI assistant! Ask me about air quality, health tips, or search a city above to check live AQI!",
-    "hello": "👋 Hello there! I'm Vaayu! How can I help you today? You can ask me about air quality or check AQI for any Indian city!",
-    "who are you": "I'm Vaayu 🌬️ — AirSafe City's AI assistant! I help citizens understand air quality and protect their health. Ask me anything!",
-    "what is aqi": "AQI stands for Air Quality Index. It measures how clean or polluted the air is. Scale: 0-50 Good 😊, 51-100 Moderate 😐, 101-150 Unhealthy for Some 😷, 151-200 Unhealthy 🤧, 201-300 Very Unhealthy 😰, 300+ Hazardous ☠️",
-    "what is pm2.5": "PM2.5 are tiny particles 2.5 micrometers or smaller. They can enter your lungs and bloodstream causing heart and lung diseases. Always check PM2.5 levels before going out!",
-    "safe for children": "Children are more vulnerable to air pollution. When AQI is above 100, keep children indoors. Avoid outdoor sports when AQI is above 150!",
-    "reduce pollution": "Simple ways to reduce pollution: 🚗 Carpool or use public transport, 🌱 Plant trees, ♻️ Avoid burning waste, 💡 Save electricity!",
-    "what causes air pollution": "Main causes in Indian cities: 🏭 Industrial emissions, 🚗 Vehicle exhaust, 🔥 Crop burning, 🏗️ Construction dust. Delhi faces severe pollution every winter!",
-    "what is pm10": "PM10 are particles 10 micrometers or smaller. Common sources: dust, pollen, mold. Can cause respiratory issues especially in asthma patients.",
-    "thank you": "You're welcome! 😊 Stay safe and keep checking AirSafe City for daily air quality updates!",
-    "thanks": "You're welcome! 😊 Remember to check AQI daily and protect yourself!",
-  };
+    document.getElementById("cityInput").addEventListener("keypress", function(e) {
+      if (e.key === "Enter") checkAQI();
+    });
 
-  // handle enter key press
-  function handleEnter(event) {
-    if (event.key === "Enter") {
-      sendMessage();
+    function updateHealthTips(aqi) {
+      const tips = {
+        good: [
+          "😊 Air is clean! Great day for outdoor activities",
+          "🏃 Perfect conditions for jogging or cycling",
+          "🪟 Open your windows and enjoy fresh air",
+          "🌿 A good day to go for a nature walk"
+        ],
+        moderate: [
+          "😐 Air quality is acceptable for most people",
+          "🤧 Unusually sensitive people should limit outdoor time",
+          "🪟 You may open windows but monitor the air",
+          "💧 Stay hydrated throughout the day"
+        ],
+        unhealthySome: [
+          "😷 Sensitive groups (elderly, children) wear a mask",
+          "🏃 Avoid heavy outdoor exercise today",
+          "🪟 Keep windows closed during peak hours",
+          "💧 Drink plenty of water to flush toxins"
+        ],
+        unhealthy: [
+          "😷 Everyone should wear a mask outdoors",
+          "🚫 Avoid all outdoor exercise today",
+          "🪟 Keep all windows and doors closed",
+          "🏠 Work from home if possible today"
+        ],
+        veryUnhealthy: [
+          "⚠️ Health alert! Minimize all outdoor activity",
+          "😷 N95 mask required if going outside",
+          "🏠 Stay indoors — air purifier recommended",
+          "🚑 Seek medical help if breathing feels difficult"
+        ],
+        hazardous: [
+          "☠️ Emergency conditions — stay indoors completely",
+          "🚨 Avoid ALL outdoor activity without exception",
+          "🏥 People with conditions should call their doctor",
+          "😷 If forced outside, use industrial-grade respirator"
+        ]
+      };
+
+      let selected;
+      if (aqi <= 50)       selected = tips.good;
+      else if (aqi <= 100) selected = tips.moderate;
+      else if (aqi <= 150) selected = tips.unhealthySome;
+      else if (aqi <= 200) selected = tips.unhealthy;
+      else if (aqi <= 300) selected = tips.veryUnhealthy;
+      else                 selected = tips.hazardous;
+
+      const section = document.querySelector(".health-section");
+      section.innerHTML = "<h2>💊 Health Recommendations</h2>" +
+        selected.map(tip => "<div class='health-tip'>" + tip + "</div>").join("");
     }
-  }
 
-  // quick ask buttons
-  function quickAsk(question) {
-    document.getElementById("chatInput").value = question;
-    sendMessage();
-  }
-
-  // main send function
-  async function sendMessage() {
-    let input = document.getElementById("chatInput");
-    let message = input.value.trim();
-
-    if (!message) return;
-
-    // show user message
-    addMessage(message, "user");
-    input.value = "";
-
-    // show typing
-    addMessage("Vaayu is typing...", "bot", "typingMsg");
-
-    // check FAQ first
-    let lowerMessage = message.toLowerCase();
-    let faqResponse = null;
-
-    for (let key in faqAnswers) {
-      if (lowerMessage.includes(key)) {
-        faqResponse = faqAnswers[key];
-        break;
+    async function checkAQI() {
+      let city = document.getElementById("cityInput").value.trim();
+      if (!city) {
+        alert("Please enter a city name!");
+        return;
       }
-    }
 
-    if (faqResponse) {
-      removeTyping();
-      addMessage(faqResponse, "bot");
-    } else {
-      // send to Gemini AI for complex questions
+      document.getElementById("aqiNumber").innerText = "⏳";
+      document.getElementById("aqiLabel").innerText = "Fetching...";
+      document.getElementById("aqiCity").innerText = "Please wait";
+
       try {
-        let response = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              contents: [{
-                parts: [{
-                  text: `You are Vaayu, an AI assistant for AirSafe City, an air quality platform for Indian cities. Answer this question briefly in 2-3 sentences focusing on air quality and health. Be friendly and helpful: ${message}`
-                }]
-              }]
-            })
-          }
-        );
-
+        let response = await fetch("https://api.waqi.info/feed/" + city + "/?token=" + token);
         let data = await response.json();
-        let reply = data.candidates[0].content.parts[0].text;
-        removeTyping();
-        addMessage(reply, "bot");
+
+        if (data.status === "ok") {
+          let aqi = data.data.aqi;
+          let cityName = data.data.city.name;
+
+          document.getElementById("aqiNumber").innerText = aqi;
+          document.getElementById("aqiCity").innerText = "📍 " + cityName;
+
+          let label, color;
+          if (aqi <= 50)       { label = "Good 😊";               color = "#34a853"; }
+          else if (aqi <= 100) { label = "Moderate 😐";           color = "#fbbc04"; }
+          else if (aqi <= 150) { label = "Unhealthy for Some 😷"; color = "#ff9800"; }
+          else if (aqi <= 200) { label = "Unhealthy 🤧";          color = "#f44336"; }
+          else if (aqi <= 300) { label = "Very Unhealthy 😰";     color = "#9c27b0"; }
+          else                 { label = "Hazardous ☠️";          color = "#7d0023"; }
+
+          document.getElementById("aqiLabel").innerText = label;
+          document.getElementById("aqiNumber").style.color = color;
+          document.getElementById("aqiLabel").style.color = color;
+
+          updateHealthTips(aqi);
+
+        } else {
+          document.getElementById("aqiNumber").innerText = "N/A";
+          document.getElementById("aqiLabel").innerText = "City not found";
+          document.getElementById("aqiCity").innerText = "Try Delhi, Mumbai or Bengaluru";
+        }
 
       } catch (error) {
-        removeTyping();
-        addMessage("Sorry, I couldn't connect right now! Try asking: 'What is AQI?' or 'Is it safe for children?' 😊", "bot");
+        document.getElementById("aqiNumber").innerText = "!";
+        document.getElementById("aqiLabel").innerText = "Error fetching data";
+        document.getElementById("aqiCity").innerText = "Check internet connection";
       }
     }
-  }
+  </script>
 
-  // add message to chat
-  function addMessage(text, sender, id = "") {
-    let chatBox = document.getElementById("chatBox");
-    let div = document.createElement("div");
-    div.className = `chat-message ${sender}-message`;
-    if (id) div.id = id;
-    div.innerText = text;
-    chatBox.appendChild(div);
-    chatBox.scrollTop = chatBox.scrollHeight;
-  }
-
-  // remove typing indicator
-  function removeTyping() {
-    let typing = document.getElementById("typingMsg");
-    if (typing) typing.remove();
-  }
-
-  // check AQI function
-  async function checkAQI() {
-    let city = document.getElementById("cityInput").value;
-
-    if (!city) {
-      alert("Please enter a city name!");
-      return;
-    }
-
-    // loading state
-    document.getElementById("aqiNumber").innerText = "...";
-    document.getElementById("aqiLabel").innerText = "Loading...";
-    document.getElementById("aqiCity").innerText = "Fetching data";
-
-    try {
-      let response = await fetch(`https://api.waqi.info/feed/${city}/?token=${token}`);
-      let data = await response.json();
-
-      if (data.status === "ok") {
-        let aqi = data.data.aqi;
-        let cityName = data.data.city.name;
-
-        document.getElementById("aqiNumber").innerText = aqi;
-        document.getElementById("aqiCity").innerText = "📍 " + cityName;
-
-        // color coding
-        if (aqi <= 50) {
-          document.getElementById("aqiLabel").innerText = "Good 😊";
-          document.getElementById("aqiNumber").style.color = "#34a853";
-          document.getElementById("aqiLabel").style.color = "#34a853";
-        } else if (aqi <= 100) {
-          document.getElementById("aqiLabel").innerText = "Moderate 😐";
-          document.getElementById("aqiNumber").style.color = "#fbbc04";
-          document.getElementById("aqiLabel").style.color = "#fbbc04";
-        } else if (aqi <= 150) {
-          document.getElementById("aqiLabel").innerText = "Unhealthy for Some 😷";
-          document.getElementById("aqiNumber").style.color = "#ff9800";
-          document.getElementById("aqiLabel").style.color = "#ff9800";
-        } else if (aqi <= 200) {
-          document.getElementById("aqiLabel").innerText = "Unhealthy 🤧";
-          document.getElementById("aqiNumber").style.color = "#f44336";
-          document.getElementById("aqiLabel").style.color = "#f44336";
-        } else if (aqi <= 300) {
-          document.getElementById("aqiLabel").innerText = "Very Unhealthy 😰";
-          document.getElementById("aqiNumber").style.color = "#9c27b0";
-          document.getElementById("aqiLabel").style.color = "#9c27b0";
-        } else {
-          document.getElementById("aqiLabel").innerText = "Hazardous ☠️";
-          document.getElementById("aqiNumber").style.color = "#7d0023";
-          document.getElementById("aqiLabel").style.color = "#7d0023";
-        }
-
-        // get AI health tips for this city
-        updateHealthTips(aqi, cityName);
-
-      } else {
-        document.getElementById("aqiNumber").innerText = "N/A";
-        document.getElementById("aqiLabel").innerText = "City not found";
-        document.getElementById("aqiCity").innerText = "Try Delhi, Mumbai or Bengaluru";
-      }
-
-    } catch (error) {
-      document.getElementById("aqiLabel").innerText = "Error fetching data";
-    }
-  }
-
-  // AI powered health tips
-  async function updateHealthTips(aqi, cityName) {
-    let healthSection = document.getElementById("healthSection");
-    healthSection.innerHTML = `
-      <h2>💊 Health Recommendations</h2>
-      <div class="health-tip">🤖 Vaayu AI is generating tips for ${cityName}...</div>
-    `;
-
-    try {
-      let response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{
-              parts: [{
-                text: `Current AQI in ${cityName} is ${aqi}. Give exactly 4 short health recommendations for citizens. Each tip should be one sentence. Start each tip with a relevant emoji. Be specific to this AQI level. Format as 4 separate lines with no numbering.`
-              }]
-            }]
-          })
-        }
-      );
-
-      let data = await response.json();
-      let reply = data.candidates[0].content.parts[0].text;
-      let tips = reply.split("\n").filter(tip => tip.trim() !== "");
-
-      healthSection.innerHTML = `
-        <h2>💊 Vaayu AI Health Tips for ${cityName}</h2>
-        ${tips.map(tip => `<div class="health-tip">${tip}</div>`).join("")}
-    
-    } catch (error) {
-      healthSection.innerHTML = `
-        <h2>💊 Health Recommendations</h2>
-        <div class="health-tip">😷 Wear mask if AQI is above 100</div>
-        <div class="health-tip">💧 Stay hydrated throughout the day</div>
-        <div class="health-tip">🏠 Limit outdoor activities when AQI is high</div>
-        <div class="health-tip">🌿 Use air purifier indoors if available</div>
-      `;
-    }
-  }
-</script>
 </body>
 </html>
