@@ -107,7 +107,7 @@
 <script>
   // tokens
   const waqiToken = "c57409aae7cb03d5edd97a5fcb3cc3206320b162";
-  const geminiKey = "AIzaSyBEcvcPIsx151t8u6Yz3CWrxtu1-E7QoMw";
+  
 
   // enter key for search
   document.getElementById("cityInput").addEventListener("keypress", function(e) {
@@ -151,27 +151,21 @@
     return "🤔 Great question! Try asking about AQI, PM2.5, masks, or how to protect yourself from pollution. You can also search your city above for live data!";
   }
 
-  // gemini AI call
-  async function callAI(prompt) {
-    try {
-      const res = await fetch(
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + geminiKey,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-        }
-      );
-      const data = await res.json();
-      if (data.candidates && data.candidates[0]) {
-        return { success: true, text: data.candidates[0].content.parts[0].text };
-      }
-      throw new Error("no response");
-    } catch (e) {
-      return { success: false, text: null };
-    }
+  // gemini AI call (via Netlify - no CORS!)
+async function callAI(prompt) {
+  try {
+    const res = await fetch("/.netlify/functions/gemini", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt })
+    });
+    const data = await res.json();
+    if (data.reply) return { success: true, text: data.reply };
+    throw new Error("empty");
+  } catch (e) {
+    return { success: false, text: null };
   }
-
+}
   // check AQI
   async function checkAQI() {
     let city = document.getElementById("cityInput").value.trim();
