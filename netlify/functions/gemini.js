@@ -13,7 +13,7 @@ exports.handler = async function(event) {
 
   try {
     const { prompt } = JSON.parse(event.body);
-    const GEMINI_KEY = "AIzaSyBEcvcPIsx151t8u6Yz3CWrxtu1-E7QoMw";
+    const GEMINI_KEY = "AIzaSyBJ3nH7axaTpN-9o1ePVBcsEW5D13a4vHE";
 
     const response = await fetch(
       "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + GEMINI_KEY,
