@@ -12,11 +12,12 @@ exports.handler = async function(event) {
   }
 
   try {
-    const { prompt } = JSON.parse(event.body);
+    const body = event.body ? JSON.parse(event.body) : {};
+    const prompt = body.prompt || "What is AQI?";
     const GEMINI_KEY = "AIzaSyBJ3nH7axaTpN-9o1ePVBcsEW5D13a4vHE";
 
     const response = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + GEMINI_KEY,
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + GEMINI_KEY,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
