@@ -1,3 +1,5 @@
+const https = require("https");
+
 exports.handler = async function(event) {
   if (event.httpMethod === "OPTIONS") {
     return {
@@ -16,19 +18,33 @@ exports.handler = async function(event) {
     const prompt = body.prompt || "What is AQI?";
     const GEMINI_KEY = "AIzaSyBJ3nH7axaTpN-9o1ePVBcsEW5D13a4vHE";
 
-    const response = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + GEMINI_KEY,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }]
-        })
-      }
-    );
+    const result = await new Promise((resolve, reject) => {
+      const postData = JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }]
+      });
 
-    const data = await response.json();
-    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      const options = {
+        hostname: "generativelanguage.googleapis.com",
+        path: "/v1beta/models/gemini-2.0-flash:generateContent?key=" + GEMINI_KEY,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Content-Length": Buffer.byteLength(postData)
+        }
+      };
+
+      const req = https.request(options, (res) => {
+        let data = "";
+        res.on("data", (chunk) => { data += chunk; });
+        res.on("end", () => { resolve(JSON.parse(data)); });
+      });
+
+      req.on("error", reject);
+      req.write(postData);
+      req.end();
+    });
+
+    const reply = result.candidates?.[0]?.content?.parts?.[0]?.text;
     if (!reply) throw new Error("empty");
 
     return {
@@ -41,7 +57,7 @@ exports.handler = async function(event) {
     return {
       statusCode: 500,
       headers: { "Access-Control-Allow-Origin": "*" },
-      body: JSON.stringify({ reply: null })
+      body: JSON.stringify({ reply: null, error: err.message })
     };
   }
 };
