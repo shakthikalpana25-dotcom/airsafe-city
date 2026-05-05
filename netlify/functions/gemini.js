@@ -16,19 +16,31 @@ exports.handler = async function(event) {
   try {
     const body = event.body ? JSON.parse(event.body) : {};
     const prompt = body.prompt || "What is AQI?";
-    const GEMINI_KEY = process.env.GEMINI_KEY;
+    const GROQ_KEY = process.env.GROQ_KEY;
 
     const postData = JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }]
+      model: "llama3-8b-8192",
+      messages: [
+        {
+          role: "system",
+          content: "You are Vaayu AI, an air quality assistant for AirSafe City, an Indian smart city app. Answer only about air quality, AQI, pollution, and health. Keep answers short, friendly, and helpful."
+        },
+        {
+          role: "user",
+          content: prompt
+        }
+      ],
+      max_tokens: 200
     });
 
     const result = await new Promise((resolve, reject) => {
       const options = {
-        hostname: "generativelanguage.googleapis.com",
-        path: "/v1/models/gemini-1.5-flash:generateContent" + GEMINI_KEY,
+        hostname: "api.groq.com",
+        path: "/openai/v1/chat/completions",
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": "Bearer " + GROQ_KEY,
           "Content-Length": Buffer.byteLength(postData)
         }
       };
@@ -47,15 +59,12 @@ exports.handler = async function(event) {
       req.end();
     });
 
-    const reply = result.candidates?.[0]?.content?.parts?.[0]?.text;
+    const reply = result.choices?.[0]?.message?.content;
 
     return {
       statusCode: 200,
       headers: { "Access-Control-Allow-Origin": "*" },
-      body: JSON.stringify({ 
-        reply: reply || null,
-        debug: !reply ? JSON.stringify(result) : undefined
-      })
+      body: JSON.stringify({ reply: reply || null })
     };
 
   } catch (err) {
