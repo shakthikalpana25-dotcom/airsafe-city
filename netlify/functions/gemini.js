@@ -18,14 +18,14 @@ exports.handler = async function(event) {
     const prompt = body.prompt || "What is AQI?";
     const GEMINI_KEY = process.env.GEMINI_KEY;
 
-    const result = await new Promise((resolve, reject) => {
-      const postData = JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }]
-      });
+    const postData = JSON.stringify({
+      contents: [{ parts: [{ text: prompt }] }]
+    });
 
+    const result = await new Promise((resolve, reject) => {
       const options = {
         hostname: "generativelanguage.googleapis.com",
-        path: "/v1beta/models/gemini-2.0-flash:generateContent?key=" + GEMINI_KEY,
+        path: "/v1beta/models/gemini-1.5-flash-latest:generateContent?key=" + GEMINI_KEY,
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -36,7 +36,10 @@ exports.handler = async function(event) {
       const req = https.request(options, (res) => {
         let data = "";
         res.on("data", (chunk) => { data += chunk; });
-        res.on("end", () => { resolve(JSON.parse(data)); });
+        res.on("end", () => {
+          try { resolve(JSON.parse(data)); }
+          catch(e) { reject(e); }
+        });
       });
 
       req.on("error", reject);
@@ -45,12 +48,14 @@ exports.handler = async function(event) {
     });
 
     const reply = result.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (!reply) throw new Error("empty");
 
     return {
       statusCode: 200,
       headers: { "Access-Control-Allow-Origin": "*" },
-      body: JSON.stringify({ reply })
+      body: JSON.stringify({ 
+        reply: reply || null,
+        debug: !reply ? JSON.stringify(result) : undefined
+      })
     };
 
   } catch (err) {
