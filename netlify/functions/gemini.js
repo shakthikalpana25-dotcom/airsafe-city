@@ -16,7 +16,7 @@ exports.handler = async function(event) {
   try {
     const body = event.body ? JSON.parse(event.body) : {};
     const prompt = body.prompt || "What is AQI?";
-    const GEMINI_KEY = "AIzaSyBJ3nH7axaTpN-9o1ePVBcsEW5D13a4vHE";
+    const GEMINI_KEY = process.env.GEMINI_KEY;
 
     const result = await new Promise((resolve, reject) => {
       const postData = JSON.stringify({
