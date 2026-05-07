@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Report Pollution - AirSafe City</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+    body { background: #f0f4f8; }
+    nav { background-color: #1a73e8; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+    .logo { color: white; font-size: 20px; font-weight: bold; text-decoration: none; }
+    .nav-links a { color: white; text-decoration: none; margin-left: 15px; font-size: 14px; }
+    .page-header { background: linear-gradient(135deg, #1a73e8, #0d47a1); color: white; text-align: center; padding: 30px 20px; }
+    .page-header h1 { font-size: 28px; margin-bottom: 5px; }
+    .page-header p { font-size: 14px; opacity: 0.9; }
+    .form-section { background: white; margin: 20px; border-radius: 15px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .form-section h2 { color: #1a73e8; margin-bottom: 20px; }
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; font-weight: bold; color: #333; margin-bottom: 5px; font-size: 14px; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 14px; outline: none; }
+    .form-group textarea { height: 100px; resize: none; }
+    .severity-buttons { display: flex; gap: 8px; }
+    .severity-btn { flex: 1; padding: 10px; border: 2px solid #e0e0e0; border-radius: 10px; background: white; font-size: 16px; cursor: pointer; text-align: center; }
+    .severity-btn.selected { border-color: #1a73e8; background: #e8f0fe; }
+    .submit-btn { width: 100%; padding: 15px; background: #1a73e8; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+    .submit-btn:disabled { background: #ccc; }
+    .success-msg { background: #e8f5e9; border: 2px solid #34a853; border-radius: 10px; padding: 20px; text-align: center; display: none; margin-top: 15px; }
+    .success-msg h3 { color: #34a853; margin-bottom: 10px; }
+    .email-section { background: #fff3e0; border: 2px solid #ff9800; border-radius: 10px; padding: 15px; margin-top: 15px; display: none; }
+    .email-section h3 { color: #ff9800; margin-bottom: 10px; }
+    .email-btn { background: #ff9800; color: white; border: none; padding: 10px 20px; border-radius: 10px; font-size: 14px; cursor: pointer; margin-top: 10px; }
+    .recent-reports { background: white; margin: 20px; border-radius: 15px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .recent-reports h2 { color: #1a73e8; margin-bottom: 15px; }
+    .report-card { background: #f8f9fa; border-radius: 10px; padding: 15px; margin-bottom: 10px; border-left: 4px solid #1a73e8; }
+    .report-card .report-location { font-weight: bold; color: #333; }
+    .report-card .report-type { color: #666; font-size: 13px; margin: 5px 0; }
+    .report-card .report-status { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+    .status-pending { background: #fff3e0; color: #ff9800; }
+    .status-investigating { background: #e3f2fd; color: #1a73e8; }
+    .status-resolved { background: #e8f5e9; color: #34a853; }
+    footer { background-color: #1a73e8; color: white; text-align: center; padding: 20px; margin-top: 20px; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">🌬️ AirSafe City</a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="map.html">AQI Pulse</a>
+    <a href="#">Health Plan</a>
+    <a href="report.html">Report</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <h1>📢 Report Pollution</h1>
+  <p>Help authorities take action — report pollution in your area</p>
+</div>
+
+<div class="form-section">
+  <h2>🏭 Submit Pollution Report</h2>
+
+  <div class="form-group">
+    <label>📍 Your Location</label>
+    <input type="text" id="location" placeholder="eg: Koramangala, Bengaluru">
+  </div>
+
+  <div class="form-group">
+    <label>🏭 Pollution Type</label>
+    <select id="pollutionType">
+      <option value="">Select type...</option>
+      <option value="Vehicle Smoke">🚗 Vehicle Smoke</option>
+      <option value="Factory Emissions">🏭 Factory Emissions</option>
+      <option value="Garbage Burning">🔥 Garbage Burning</option>
+      <option value="Construction Dust">🏗️ Construction Dust</option>
+      <option value="Crop Burning">🌾 Crop Burning</option>
+      <option value="Chemical Smell">☣️ Chemical Smell</option>
+      <option value="Other">❓ Other</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>⭐ Severity Level</label>
+    <div class="severity-buttons">
+      <button class="severity-btn" onclick="setSeverity(1)">1<br>Low</button>
+      <button class="severity-btn" onclick="setSeverity(2)">2<br>Mild</button>
+      <button class="severity-btn" onclick="setSeverity(3)">3<br>Medium</button>
+      <button class="severity-btn" onclick="setSeverity(4)">4<br>High</button>
+      <button class="severity-btn" onclick="setSeverity(5)">5<br>Critical</button>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>📝 Description</label>
+    <textarea id="description" placeholder="Describe what you see, smell, or experience..."></textarea>
+  </div>
+
+  <div class="form-group">
+    <label>👤 Your Name (optional)</label>
+    <input type="text" id="reporterName" placeholder="Anonymous">
+  </div>
+
+  <button class="submit-btn" id="submitBtn" onclick="submitReport()">
+    📤 Submit Report to Authorities
+  </button>
+
+  <div class="success-msg" id="successMsg">
+    <h3>✅ Report Submitted Successfully!</h3>
+    <p>Your report has been saved and will be reviewed by authorities.</p>
+    <p style="margin-top:8px;font-size:13px;color:#666">Report ID: <span id="reportId"></span></p>
+  </div>
+
+  <div class="email-section" id="emailSection">
+    <h3>📧 Also notify CPCB directly?</h3>
+    <p style="font-size:13px;color:#666">Send this report to Central Pollution Control Board via email</p>
+    <button class="email-btn" onclick="sendEmail()">📧 Open Email to CPCB</button>
+  </div>
+</div>
+
+<div class="recent-reports">
+  <h2>📋 Recent Community Reports</h2>
+  <div id="reportsList">
+    <p style="color:#999;text-align:center">Loading reports...</p>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 AirSafe City | Team Vertex Systems | WitchHunt Hackathon</p>
+</footer>
+
+<script>
+  let selectedSeverity = 0;
+  let lastReport = null;
+
+  function setSeverity(level) {
+    selectedSeverity = level;
+    document.querySelectorAll(".severity-btn").forEach((btn, i) => {
+      btn.classList.toggle("selected", i + 1 === level);
+    });
+  }
+
+  async function submitReport() {
+    const location = document.getElementById("location").value.trim();
+    const pollutionType = document.getElementById("pollutionType").value;
+    const description = document.getElementById("description").value.trim();
+    const reporterName = document.getElementById("reporterName").value.trim() || "Anonymous";
+
+    if (!location || !pollutionType || !selectedSeverity || !description) {
+      alert("Please fill all required fields!");
+      return;
+    }
+
+    const btn = document.getElementById("submitBtn");
+    btn.disabled = true;
+    btn.innerText = "Submitting...";
+
+    const report = {
+      location,
+      pollutionType,
+      severity: selectedSeverity,
+      description,
+      reporterName
+    };
+
+    try {
+      const res = await fetch("/.netlify/functions/reports", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(report)
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        lastReport = data.report;
+        document.getElementById("reportId").innerText = "#" + data.report.id;
+        document.getElementById("successMsg").style.display = "block";
+        document.getElementById("emailSection").style.display = "block";
+        btn.innerText = "✅ Submitted!";
+        loadReports();
+      }
+    } catch(err) {
+      alert("Error submitting report. Please try again!");
+      btn.disabled = false;
+      btn.innerText = "📤 Submit Report to Authorities";
+    }
+  }
+
+  function sendEmail() {
+    if (!lastReport) return;
+    const subject = "Pollution Report - " + lastReport.pollutionType + " at " + lastReport.location;
+    const body = `Dear CPCB Officer,\n\nA pollution incident has been reported via AirSafe City:\n\nLocation: ${lastReport.location}\nType: ${lastReport.pollutionType}\nSeverity: ${lastReport.severity}/5\nDescription: ${lastReport.description}\nReported by: ${lastReport.reporterName}\nTime: ${lastReport.timestamp}\nReport ID: #${lastReport.id}\n\nPlease take necessary action.\n\nRegards,\nAirSafe City Platform`;
+    window.location.href = "mailto:head_office@cpcb.nic.in?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+  }
+
+  async function loadReports() {
+    try {
+      const res = await fetch("/.netlify/functions/reports");
+      const data = await res.json();
+      const reports = data.reports || [];
+
+      if (reports.length === 0) {
+        document.getElementById("reportsList").innerHTML = "<p style='color:#999;text-align:center'>No reports yet. Be the first to report!</p>";
+        return;
+      }
+
+      document.getElementById("reportsList").innerHTML = reports.slice(0, 5).map(r => `
+        <div class="report-card">
+          <div class="report-location">📍 ${r.location}</div>
+          <div class="report-type">🏭 ${r.pollutionType} • Severity: ${"⭐".repeat(r.severity)}</div>
+          <div class="report-type">📝 ${r.description.substring(0, 80)}${r.description.length > 80 ? "..." : ""}</div>
+          <div class="report-type">🕐 ${r.timestamp} • 👤 ${r.reporterName}</div>
+          <span class="report-status status-${r.status.toLowerCase()}">${r.status}</span>
+        </div>
+      `).join("");
+    } catch(err) {
+      document.getElementById("reportsList").innerHTML = "<p style='color:#999;text-align:center'>Could not load reports.</p>";
+    }
+  }
+
+  loadReports();
+</script>
+</body>
+</html>
