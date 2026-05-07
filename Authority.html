@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Authority Dashboard - AirSafe City</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+    body { background: #f0f4f8; }
+    nav { background-color: #1a73e8; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+    .logo { color: white; font-size: 20px; font-weight: bold; text-decoration: none; }
+    .nav-links a { color: white; text-decoration: none; margin-left: 15px; font-size: 14px; }
+
+    /* Login Screen */
+    .login-screen { display: flex; justify-content: center; align-items: center; min-height: 80vh; }
+    .login-card { background: white; border-radius: 20px; padding: 40px 30px; width: 90%; max-width: 400px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); text-align: center; }
+    .login-card h2 { color: #1a73e8; margin-bottom: 5px; font-size: 24px; }
+    .login-card p { color: #666; margin-bottom: 25px; font-size: 14px; }
+    .login-card input { width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px; outline: none; margin-bottom: 15px; text-align: center; letter-spacing: 3px; }
+    .login-btn { width: 100%; padding: 14px; background: #1a73e8; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
+    .login-error { color: #f44336; font-size: 13px; margin-top: 10px; display: none; }
+
+    /* Dashboard */
+    .dashboard { display: none; }
+    .dash-header { background: linear-gradient(135deg, #1a73e8, #0d47a1); color: white; padding: 25px 20px; }
+    .dash-header h1 { font-size: 24px; margin-bottom: 5px; }
+    .stats-row { display: flex; gap: 15px; padding: 20px; overflow-x: auto; }
+    .stat-card { background: white; border-radius: 15px; padding: 20px; min-width: 120px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .stat-number { font-size: 32px; font-weight: bold; color: #1a73e8; }
+    .stat-label { font-size: 12px; color: #666; margin-top: 5px; }
+    .reports-section { background: white; margin: 20px; border-radius: 15px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .reports-section h2 { color: #1a73e8; margin-bottom: 15px; }
+    .report-card { background: #f8f9fa; border-radius: 10px; padding: 15px; margin-bottom: 10px; border-left: 4px solid #1a73e8; }
+    .report-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+    .report-location { font-weight: bold; color: #333; }
+    .report-type { color: #666; font-size: 13px; margin: 3px 0; }
+    .report-status { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+    .status-pending { background: #fff3e0; color: #ff9800; }
+    .status-investigating { background: #e3f2fd; color: #1a73e8; }
+    .status-resolved { background: #e8f5e9; color: #34a853; }
+    .action-buttons { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+    .action-btn { padding: 6px 12px; border: none; border-radius: 20px; font-size: 12px; cursor: pointer; font-weight: bold; }
+    .btn-investigate { background: #e3f2fd; color: #1a73e8; }
+    .btn-resolve { background: #e8f5e9; color: #34a853; }
+    .btn-email { background: #fff3e0; color: #ff9800; }
+    .logout-btn { background: rgba(255,255,255,0.2); color: white; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 13px; }
+    footer { background-color: #1a73e8; color: white; text-align: center; padding: 20px; margin-top: 20px; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">🌬️ AirSafe City</a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="map.html">AQI Pulse</a>
+    <a href="report.html">Report</a>
+    <button class="logout-btn" id="logoutBtn" onclick="logout()" style="display:none">Logout</button>
+  </div>
+</nav>
+
+<!-- Login Screen -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <div style="font-size:50px;margin-bottom:15px">🏛️</div>
+    <h2>Authority Login</h2>
+    <p>AirSafe City — Pollution Control Dashboard</p>
+    <input type="password" id="passwordInput" placeholder="Enter password" onkeypress="if(event.key==='Enter')login()">
+    <button class="login-btn" onclick="login()">🔐 Login as Officer</button>
+    <p class="login-error" id="loginError">❌ Incorrect password. Try again!</p>
+  </div>
+</div>
+
+<!-- Dashboard -->
+<div class="dashboard" id="dashboard">
+  <div class="dash-header">
+    <h1>🏛️ Authority Dashboard</h1>
+    <p>Pollution Control Officer Panel — AirSafe City</p>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-number" id="totalCount">0</div>
+      <div class="stat-label">Total Reports</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" style="color:#ff9800" id="pendingCount">0</div>
+      <div class="stat-label">Pending</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" style="color:#1a73e8" id="investigatingCount">0</div>
+      <div class="stat-label">Investigating</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" style="color:#34a853" id="resolvedCount">0</div>
+      <div class="stat-label">Resolved</div>
+    </div>
+  </div>
+
+  <div class="reports-section">
+    <h2>📋 All Pollution Reports</h2>
+    <div id="allReports">
+      <p style="color:#999;text-align:center">Loading reports...</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 AirSafe City | Team Vertex Systems | WitchHunt Hackathon</p>
+</footer>
+
+<script>
+  const PASSWORD = "airsafe2026";
+  let allReports = [];
+
+  function login() {
+    const pwd = document.getElementById("passwordInput").value;
+    if (pwd === PASSWORD) {
+      document.getElementById("loginScreen").style.display = "none";
+      document.getElementById("dashboard").style.display = "block";
+      document.getElementById("logoutBtn").style.display = "inline-block";
+      loadAllReports();
+    } else {
+      document.getElementById("loginError").style.display = "block";
+    }
+  }
+
+  function logout() {
+    document.getElementById("loginScreen").style.display = "flex";
+    document.getElementById("dashboard").style.display = "none";
+    document.getElementById("logoutBtn").style.display = "none";
+    document.getElementById("passwordInput").value = "";
+  }
+
+  async function loadAllReports() {
+    try {
+      const res = await fetch("/.netlify/functions/reports");
+      const data = await res.json();
+      allReports = data.reports || [];
+
+      document.getElementById("totalCount").innerText = allReports.length;
+      document.getElementById("pendingCount").innerText = allReports.filter(r => r.status === "Pending").length;
+      document.getElementById("investigatingCount").innerText = allReports.filter(r => r.status === "Investigating").length;
+      document.getElementById("resolvedCount").innerText = allReports.filter(r => r.status === "Resolved").length;
+
+      if (allReports.length === 0) {
+        document.getElementById("allReports").innerHTML = "<p style='color:#999;text-align:center'>No reports yet!</p>";
+        return;
+      }
+
+      document.getElementById("allReports").innerHTML = allReports.map((r, i) => `
+        <div class="report-card" id="report-${i}">
+          <div class="report-top">
+            <div>
+              <div class="report-location">📍 ${r.location}</div>
+              <div class="report-type">🏭 ${r.pollutionType} • Severity: ${"⭐".repeat(r.severity)}</div>
+              <div class="report-type">📝 ${r.description}</div>
+              <div class="report-type">🕐 ${r.timestamp} • 👤 ${r.reporterName}</div>
+            </div>
+            <span class="report-status status-${r.status.toLowerCase()}">${r.status}</span>
+          </div>
+          <div class="action-buttons">
+            <button class="action-btn btn-investigate" onclick="updateStatus(${i}, 'Investigating')">🔍 Investigate</button>
+            <button class="action-btn btn-resolve" onclick="updateStatus(${i}, 'Resolved')">✅ Resolve</button>
+            <button class="action-btn btn-email" onclick="emailCPCB(${i})">📧 Email CPCB</button>
+          </div>
+        </div>
+      `).join("");
+    } catch(err) {
+      document.getElementById("allReports").innerHTML = "<p style='color:#999;text-align:center'>Error loading reports.</p>";
+    }
+  }
+
+  async function updateStatus(index, status) {
+    allReports[index].status = status;
+    try {
+      await fetch("/.netlify/functions/reports", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ updateAll: true, reports: allReports })
+      });
+      loadAllReports();
+    } catch(err) {
+      alert("Error updating status!");
+    }
+  }
+
+  function emailCPCB(index) {
+    const r = allReports[index];
+    const subject = "Pollution Report - " + r.pollutionType + " at " + r.location;
+    const body = `Dear CPCB Officer,\n\nUrgent pollution report from AirSafe City:\n\nLocation: ${r.location}\nType: ${r.pollutionType}\nSeverity: ${r.severity}/5\nDescription: ${r.description}\nReported by: ${r.reporterName}\nTime: ${r.timestamp}\n\nPlease take immediate action.\n\nRegards,\nAirSafe City Authority`;
+    window.location.href = "mailto:head_office@cpcb.nic.in?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+  }
+</script>
+</body>
+</html>
