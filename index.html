@@ -42,6 +42,116 @@
   </style>
 </head>
 <body>
+
+  <!-- SPLASH SCREEN -->
+<div id="splash" style="
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: #0a0e1a;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  animation: fadeOut 0.8s ease 3s forwards;
+">
+
+  <!-- Logo -->
+  <div style="
+    font-size: 70px;
+    animation: pulse 1.5s ease infinite;
+  ">🌬️</div>
+
+  <!-- App Name -->
+  <div style="
+    font-size: 32px;
+    font-weight: bold;
+    color: #1a73e8;
+    letter-spacing: 3px;
+    animation: slideUp 0.8s ease;
+  ">AirSafe City</div>
+
+  <!-- Tagline -->
+  <div style="
+    font-size: 14px;
+    color: #888;
+    letter-spacing: 2px;
+    animation: slideUp 1s ease;
+  ">BREATHE SAFE. LIVE SMART.</div>
+
+  <!-- Glowing line -->
+  <div style="
+    width: 60px;
+    height: 2px;
+    background: #1a73e8;
+    border-radius: 2px;
+    box-shadow: 0 0 10px #1a73e8;
+    animation: expand 1.5s ease forwards;
+  "></div>
+
+  <!-- Team name -->
+  <div style="
+    font-size: 12px;
+    color: #555;
+    letter-spacing: 3px;
+    margin-top: 10px;
+    animation: slideUp 1.2s ease;
+  ">TEAM VERTEX SYSTEMS</div>
+
+  <!-- Loading dots -->
+  <div style="display:flex; gap:8px; margin-top:20px;">
+    <div style="width:8px;height:8px;background:#1a73e8;border-radius:50%;animation:dot 1.2s ease 0s infinite"></div>
+    <div style="width:8px;height:8px;background:#1a73e8;border-radius:50%;animation:dot 1.2s ease 0.2s infinite"></div>
+    <div style="width:8px;height:8px;background:#1a73e8;border-radius:50%;animation:dot 1.2s ease 0.4s infinite"></div>
+  </div>
+
+  <!-- WitchHunt badge -->
+  <div style="
+    position: absolute;
+    bottom: 30px;
+    font-size: 11px;
+    color: #333;
+    letter-spacing: 2px;
+  ">WITCHHUNT 2026 HACKATHON</div>
+
+</div>
+
+<style>
+  @keyframes fadeOut {
+    0%   { opacity: 1; pointer-events: all; }
+    100% { opacity: 0; pointer-events: none; display: none; }
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50%       { transform: scale(1.15); }
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes expand {
+    from { width: 0px; }
+    to   { width: 60px; }
+  }
+
+  @keyframes dot {
+    0%, 100% { opacity: 0.2; transform: scale(0.8); }
+    50%       { opacity: 1;   transform: scale(1.2); }
+  }
+</style>
+
+<script>
+  // Remove splash from DOM after 4 seconds
+  setTimeout(() => {
+    const splash = document.getElementById("splash");
+    if (splash) splash.remove();
+  }, 4000);
+             </script>
   
   <!-- NAVBAR -->
 <nav>
