@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - AirSafe City</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+
+    body { background: #0a0e1a; color: #e0e0e0; }
+
+    nav {
+      background: #0d1117;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #1a73e8;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .logo { color: #1a73e8; font-size: 20px; font-weight: bold; text-decoration: none; }
+    .hamburger { background: none; border: 1px solid #1a73e8; color: #1a73e8; font-size: 20px; padding: 5px 12px; border-radius: 8px; cursor: pointer; }
+    .nav-menu { position: fixed; top: 0; right: -280px; width: 260px; height: 100vh; background: #0d1117; border-left: 1px solid #1a73e8; display: flex; flex-direction: column; padding: 30px 20px; gap: 5px; transition: right 0.3s ease; z-index: 9999; }
+    .nav-menu.open { right: 0; }
+    .nav-menu a { color: #e0e0e0; text-decoration: none; padding: 14px 15px; border-radius: 10px; font-size: 15px; border: 1px solid transparent; }
+    .nav-menu a:hover { background: #0a1628; border-color: #1a73e8; color: #1a73e8; }
+    .nav-close { background: none; border: 1px solid #f44336; color: #f44336; padding: 10px 15px; border-radius: 10px; font-size: 14px; cursor: pointer; margin-top: 10px; }
+    .nav-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9998; }
+    .nav-overlay.open { display: block; }
+
+    .page-header {
+      background: linear-gradient(135deg, #0d1117, #0a1628);
+      border-bottom: 1px solid #1a73e8;
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .page-header h1 { font-size: 28px; color: #1a73e8; margin-bottom: 8px; }
+    .page-header p { color: #888; font-size: 14px; }
+
+    .section {
+      background: #0d1117;
+      margin: 20px;
+      border-radius: 15px;
+      padding: 25px;
+      border: 1px solid #1a2535;
+    }
+
+    .section-title {
+      color: #1a73e8;
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #1a2535;
+    }
+
+    .setting-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #1a2535;
+    }
+
+    .setting-row:last-child { border-bottom: none; }
+
+    .setting-label {
+      font-size: 14px;
+      color: #ccc;
+    }
+
+    .setting-label span {
+      display: block;
+      font-size: 12px;
+      color: #666;
+      margin-top: 3px;
+    }
+
+    /* Toggle Switch */
+    .toggle {
+      position: relative;
+      width: 50px;
+      height: 26px;
+    }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #1a2535;
+      border-radius: 26px;
+      transition: 0.3s;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px; width: 18px;
+      left: 4px; bottom: 4px;
+      background: #666;
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+    input:checked + .slider { background: #1a73e8; }
+    input:checked + .slider:before { transform: translateX(24px); background: white; }
+
+    /* Form inputs */
+    .setting-input {
+      width: 100%;
+      padding: 12px 15px;
+      background: #0a0e1a;
+      border: 1px solid #1a2535;
+      border-radius: 10px;
+      color: #e0e0e0;
+      font-size: 14px;
+      outline: none;
+      margin-top: 8px;
+    }
+    .setting-input:focus { border-color: #1a73e8; }
+    .setting-input option { background: #0d1117; }
+
+    /* Language buttons */
+    .lang-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .lang-option {
+      padding: 12px;
+      background: #0a0e1a;
+      border: 1px solid #1a2535;
+      border-radius: 10px;
+      color: #ccc;
+      font-size: 14px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .lang-option.active {
+      border-color: #1a73e8;
+      background: #0a1628;
+      color: #1a73e8;
+      font-weight: bold;
+    }
+
+    /* Condition checkboxes */
+    .condition-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .condition-chip {
+      padding: 8px 14px;
+      background: #0a0e1a;
+      border: 1px solid #1a2535;
+      border-radius: 20px;
+      color: #ccc;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .condition-chip.active {
+      border-color: #1a73e8;
+      background: #0a1628;
+      color: #1a73e8;
+    }
+
+    /* Save button */
+    .save-btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #1a73e8, #0d47a1);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      letter-spacing: 1px;
+    }
+
+    .saved-msg {
+      text-align: center;
+      color: #34a853;
+      font-size: 14px;
+      margin-top: 10px;
+      display: none;
+    }
+
+    /* Theme preview */
+    .theme-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .theme-option {
+      padding: 15px;
+      border-radius: 10px;
+      border: 2px solid #1a2535;
+      cursor: pointer;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .theme-option.active { border-color: #1a73e8; }
+
+    .theme-dark { background: #0a0e1a; color: #e0e0e0; }
+    .theme-light { background: #f0f4f8; color: #333; }
+
+    footer {
+      background: #0d1117;
+      color: #555;
+      text-align: center;
+      padding: 20px;
+      margin-top: 20px;
+      border-top: 1px solid #1a2535;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <a href="index.html" class="logo">🌬️ AirSafe City</a>
+  <button class="hamburger" onclick="toggleMenu()">☰</button>
+  <div class="nav-menu" id="navMenu">
+    <a href="index.html">🏠 Home</a>
+    <a href="map.html">🗺️ AQI Pulse</a>
+    <a href="healthplan.html">💊 Health Plan</a>
+    <a href="report.html">📢 Report</a>
+    <a href="settings.html">⚙️ Settings</a>
+    <button class="nav-close" onclick="toggleMenu()">✕ Close</button>
+  </div>
+  <div class="nav-overlay" id="navOverlay" onclick="toggleMenu()"></div>
+</nav>
+
+<div class="page-header">
+  <h1>⚙️ Settings</h1>
+  <p>Personalize your AirSafe City experience</p>
+</div>
+
+<!-- LANGUAGE -->
+<div class="section">
+  <div class="section-title">🌐 Language</div>
+  <div class="lang-grid">
+    <div class="lang-option" id="lang-en" onclick="setLang('en')">🇬🇧 English</div>
+    <div class="lang-option" id="lang-hi" onclick="setLang('hi')">🇮🇳 हिंदी</div>
+    <div class="lang-option" id="lang-kn" onclick="setLang('kn')">🇮🇳 ಕನ್ನಡ</div>
+    <div class="lang-option" id="lang-ta" onclick="setLang('ta')">🇮🇳 தமிழ்</div>
+    <div class="lang-option" id="lang-te" onclick="setLang('te')">🇮🇳 తెలుగు</div>
+  </div>
+</div>
+
+<!-- THEME -->
+<div class="section">
+  <div class="section-title">🎨 Theme</div>
+  <div class="theme-grid">
+    <div class="theme-option theme-dark active" id="theme-dark" onclick="setTheme('dark')">
+      🌙 Dark Mode<br><small>Techy & Modern</small>
+    </div>
+    <div class="theme-option theme-light" id="theme-light" onclick="setTheme('light')">
+      ☀️ Light Mode<br><small>Clean & Minimal</small>
+    </div>
+  </div>
+</div>
+
+<!-- USER PROFILE -->
+<div class="section">
+  <div class="section-title">👤 Your Profile</div>
+
+  <div class="setting-label">Full Name</div>
+  <input class="setting-input" id="userName" placeholder="Enter your name">
+
+  <div class="setting-label" style="margin-top:15px">📍 Default City</div>
+  <input class="setting-input" id="defaultCity" placeholder="eg: Bengaluru, Delhi, Mumbai">
+
+  <div class="setting-label" style="margin-top:15px">🎂 Age Group</div>
+  <select class="setting-input" id="ageGroup">
+    <option value="">Select age group...</option>
+    <option value="child">👶 Child (0-12)</option>
+    <option value="teen">🧑 Teen (13-17)</option>
+    <option value="adult">👨 Adult (18-45)</option>
+    <option value="senior">👴 Senior (46-60)</option>
+    <option value="elderly">🧓 Elderly (60+)</option>
+  </select>
+
+  <div class="setting-label" style="margin-top:15px">🏥 Health Conditions</div>
+  <div class="condition-grid">
+    <div class="condition-chip" onclick="toggleChip(this)" data-val="asthma">🫁 Asthma</div>
+    <div class="condition-chip" onclick="toggleChip(this)" data-val="heart">❤️ Heart Disease</div>
+    <div class="condition-chip" onclick="toggleChip(this)" data-val="diabetes">🩸 Diabetes</div>
+    <div class="condition-chip" onclick="toggleChip(this)" data-val="allergies">🤧 Allergies</div>
+    <div class="condition-chip" onclick="toggleChip(this)" data-val="copd">😮‍💨 COPD</div>
+    <div class="condition-chip" onclick="toggleChip(this)" data-val="pregnant">🤰 Pregnant</div>
+    <div class="condition-chip" onclick="toggleChip(this)" data-val="none">✅ None</div>
+  </div>
+</div>
+
+<!-- NOTIFICATIONS -->
+<div class="section">
+  <div class="section-title">🔔 Notifications</div>
+
+  <div class="setting-row">
+    <div class="setting-label">
+      Daily AQI Alert
+      <span>Get morning AQI update for your city</span>
+    </div>
+    <label class="toggle">
+      <input type="checkbox" id="notifDaily">
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <div class="setting-row">
+    <div class="setting-label">
+      Hazardous AQI Warning
+      <span>Alert when AQI crosses 200</span>
+    </div>
+    <label class="toggle">
+      <input type="checkbox" id="notifHazard" checked>
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <div class="setting-row">
+    <div class="setting-label">
+      Health Tips
+      <span>Daily personalized health tip</span>
+    </div>
+    <label class="toggle">
+      <input type="checkbox" id="notifTips" checked>
+      <span class="slider"></span>
+    </label>
+  </div>
+</div>
+
+<!-- SAVE -->
+<div class="section">
+  <button class="save-btn" onclick="saveSettings()">💾 Save Settings</button>
+  <div class="saved-msg" id="savedMsg">✅ Settings saved successfully!</div>
+</div>
+
+<footer>
+  © 2026 AirSafe City | Team Vertex Systems | WitchHunt Hackathon
+</footer>
+
+<script>
+  function toggleMenu() {
+    document.getElementById("navMenu").classList.toggle("open");
+    document.getElementById("navOverlay").classList.toggle("open");
+  }
+
+  // ── LANGUAGE ──────────────────────────────────────────
+  function setLang(lang) {
+    localStorage.setItem("lang", lang);
+    document.querySelectorAll(".lang-option").forEach(el => el.classList.remove("active"));
+    document.getElementById("lang-" + lang).classList.add("active");
+  }
+
+  // ── THEME ─────────────────────────────────────────────
+  function setTheme(theme) {
+    localStorage.setItem("theme", theme);
+    document.querySelectorAll(".theme-option").forEach(el => el.classList.remove("active"));
+    document.getElementById("theme-" + theme).classList.add("active");
+
+    if (theme === "light") {
+      document.body.style.background = "#f0f4f8";
+      document.body.style.color = "#333";
+    } else {
+      document.body.style.background = "#0a0e1a";
+      document.body.style.color = "#e0e0e0";
+    }
+  }
+
+  // ── CONDITION CHIPS ───────────────────────────────────
+  function toggleChip(el) {
+    el.classList.toggle("active");
+  }
+
+  // ── SAVE ──────────────────────────────────────────────
+  function saveSettings() {
+    const conditions = Array.from(document.querySelectorAll(".condition-chip.active"))
+      .map(c => c.dataset.val);
+
+    const settings = {
+      userName: document.getElementById("userName").value,
+      defaultCity: document.getElementById("defaultCity").value,
+      ageGroup: document.getElementById("ageGroup").value,
+      conditions: conditions,
+      notifDaily: document.getElementById("notifDaily").checked,
+      notifHazard: document.getElementById("notifHazard").checked,
+      notifTips: document.getElementById("notifTips").checked,
+      lang: localStorage.getItem("lang") || "en",
+      theme: localStorage.getItem("theme") || "dark"
+    };
+
+    localStorage.setItem("userSettings", JSON.stringify(settings));
+
+    const msg = document.getElementById("savedMsg");
+    msg.style.display = "block";
+    setTimeout(() => msg.style.display = "none", 3000);
+  }
+
+  // ── LOAD SAVED SETTINGS ───────────────────────────────
+  function loadSettings() {
+    const saved = JSON.parse(localStorage.getItem("userSettings") || "{}");
+
+    if (saved.userName) document.getElementById("userName").value = saved.userName;
+    if (saved.defaultCity) document.getElementById("defaultCity").value = saved.defaultCity;
+    if (saved.ageGroup) document.getElementById("ageGroup").value = saved.ageGroup;
+
+    if (saved.conditions) {
+      document.querySelectorAll(".condition-chip").forEach(chip => {
+        if (saved.conditions.includes(chip.dataset.val)) chip.classList.add("active");
+      });
+    }
+
+    if (saved.notifDaily !== undefined) document.getElementById("notifDaily").checked = saved.notifDaily;
+    if (saved.notifHazard !== undefined) document.getElementById("notifHazard").checked = saved.notifHazard;
+    if (saved.notifTips !== undefined) document.getElementById("notifTips").checked = saved.notifTips;
+
+    const lang = saved.lang || localStorage.getItem("lang") || "en";
+    setLang(lang);
+
+    const theme = saved.theme || localStorage.getItem("theme") || "dark";
+    setTheme(theme);
+  }
+
+  loadSettings();
+</script>
+</body>
+  </html>
