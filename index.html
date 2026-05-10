@@ -43,18 +43,16 @@
 </head>
 <body>
 
-  <!-- navbar -->
   <nav>
     <div class="logo">🌬️ AirSafe City</div>
     <div class="nav-links">
       <a href="#">Home</a>
       <a href="map.html">AQI Pulse</a>
       <a href="#">Health Plan</a>
-      <a href="Report.html">Report</a>
+      <a href="report.html">Report</a>
     </div>
   </nav>
 
-  <!-- hero -->
   <div class="hero">
     <h1>Breathe Safe. Live Smart.</h1>
     <p>Real-time air quality monitoring for every Indian city</p>
@@ -64,20 +62,17 @@
     </div>
   </div>
 
-  <!-- aqi card -->
   <div class="aqi-card">
     <div class="aqi-number" id="aqiNumber">--</div>
     <div class="aqi-label" id="aqiLabel">Enter a city above</div>
     <div class="aqi-city" id="aqiCity">📍 Waiting...</div>
   </div>
 
-  <!-- health tips -->
   <div class="health-section" id="healthSection">
     <h2>💊 Health Recommendations</h2>
     <div class="health-tip">🔍 Search a city above to get AI health tips</div>
   </div>
 
-  <!-- vaayu chatbot -->
   <div class="chatbot-section">
     <div class="chatbot-header">
       <h2>🤖 Ask</h2>
@@ -99,25 +94,20 @@
     </div>
   </div>
 
-  <!-- footer -->
   <footer>
-  <p>© 2026 AirSafe City | Team Vertex Systems | WitchHunt Hackathon</p>
-  <p style="margin-top:8px;font-size:12px;opacity:0.7">
-    <a href="authority.html" style="color:white;text-decoration:none">🏛️ Authority Login</a>
-  </p>
+    <p>© 2026 AirSafe City | Team Vertex Systems | WitchHunt Hackathon</p>
+    <p style="margin-top:8px;font-size:12px;opacity:0.7">
+      <a href="authority.html" style="color:white;text-decoration:none">🏛️ Authority Login</a>
+    </p>
   </footer>
 
 <script>
-  // tokens
   const waqiToken = "c57409aae7cb03d5edd97a5fcb3cc3206320b162";
-  
 
-  // enter key for search
   document.getElementById("cityInput").addEventListener("keypress", function(e) {
     if (e.key === "Enter") checkAQI();
   });
 
-  // smart fallback tips
   const smartTips = {
     good: ["😊 Air is clean! Great day for outdoor activities", "🏃 Perfect conditions for jogging or cycling", "🪟 Open your windows and enjoy fresh air", "🌿 A wonderful day for a nature walk"],
     moderate: ["😐 Air is acceptable but sensitive people take care", "🤧 Limit outdoor time if you have asthma", "💧 Stay hydrated — drink at least 8 glasses of water", "🪟 Open windows briefly but monitor air quality"],
@@ -136,7 +126,6 @@
     else return smartTips.hazardous;
   }
 
-  // smart fallback chat replies
   function getSmartChatReply(message) {
     const msg = message.toLowerCase();
     if (msg.includes("hi") || msg.includes("hello") || msg.includes("hey")) return "👋 Hello! I'm Vaayu AI, your air quality assistant. Ask me about AQI, pollution causes, health tips, or how to stay safe!";
@@ -154,23 +143,25 @@
     return "🤔 Great question! Try asking about AQI, PM2.5, masks, or how to protect yourself from pollution. You can also search your city above for live data!";
   }
 
-  const BASE_URL = window.location.hostname.includes('github.io') ? 'https://airsafe-hackaton.netlify.app' : '';
-  // gemini AI call (via Netlify - no CORS!)
-async function callAI(prompt) {
-  try {
-    const res = await fetch(BASE_URL + "/.netlify/functions/gemini", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt })
-    });
-    const data = await res.json();
-    if (data.reply) return { success: true, text: data.reply };
-    throw new Error("empty");
-  } catch (e) {
-    return { success: false, text: null };
+  const BASE_URL = window.location.hostname.includes('github.io') 
+    ? 'https://airsafe-city.vercel.app' 
+    : '';
+
+  async function callAI(prompt) {
+    try {
+      const res = await fetch(BASE_URL + "/api/gemini", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt })
+      });
+      const data = await res.json();
+      if (data.reply) return { success: true, text: data.reply };
+      throw new Error("empty");
+    } catch (e) {
+      return { success: false, text: null };
+    }
   }
-}
-  // check AQI
+
   async function checkAQI() {
     let city = document.getElementById("cityInput").value.trim();
     if (!city) { alert("Please enter a city name!"); return; }
@@ -216,7 +207,6 @@ async function callAI(prompt) {
     }
   }
 
-  // AI health tips
   async function updateHealthTips(aqi, cityName) {
     document.getElementById("healthSection").innerHTML =
       "<h2>💊 Health Recommendations</h2>" +
@@ -234,7 +224,6 @@ async function callAI(prompt) {
       tips.map(tip => "<div class='health-tip'>" + tip + "</div>").join("");
   }
 
-  // chatbot functions
   function handleEnter(event) { if (event.key === "Enter") sendMessage(); }
   function quickAsk(question) { document.getElementById("chatInput").value = question; sendMessage(); }
 
