@@ -60,12 +60,10 @@
 
 <div class="form-section">
   <h2>🏭 Submit Pollution Report</h2>
-
   <div class="form-group">
     <label>📍 Your Location</label>
     <input type="text" id="location" placeholder="eg: Koramangala, Bengaluru">
   </div>
-
   <div class="form-group">
     <label>🏭 Pollution Type</label>
     <select id="pollutionType">
@@ -79,7 +77,6 @@
       <option value="Other">❓ Other</option>
     </select>
   </div>
-
   <div class="form-group">
     <label>⭐ Severity Level</label>
     <div class="severity-buttons">
@@ -90,27 +87,20 @@
       <button class="severity-btn" onclick="setSeverity(5)">5<br>Critical</button>
     </div>
   </div>
-
   <div class="form-group">
     <label>📝 Description</label>
     <textarea id="description" placeholder="Describe what you see, smell, or experience..."></textarea>
   </div>
-
   <div class="form-group">
     <label>👤 Your Name (optional)</label>
     <input type="text" id="reporterName" placeholder="Anonymous">
   </div>
-
-  <button class="submit-btn" id="submitBtn" onclick="submitReport()">
-    📤 Submit Report to Authorities
-  </button>
-
+  <button class="submit-btn" id="submitBtn" onclick="submitReport()">📤 Submit Report to Authorities</button>
   <div class="success-msg" id="successMsg">
     <h3>✅ Report Submitted Successfully!</h3>
     <p>Your report has been saved and will be reviewed by authorities.</p>
     <p style="margin-top:8px;font-size:13px;color:#666">Report ID: <span id="reportId"></span></p>
   </div>
-
   <div class="email-section" id="emailSection">
     <h3>📧 Also notify CPCB directly?</h3>
     <p style="font-size:13px;color:#666">Send this report to Central Pollution Control Board via email</p>
@@ -125,7 +115,7 @@
   </div>
 </div>
 
-footer>
+<footer>
   <p>© 2026 AirSafe City | Team Vertex Systems | WitchHunt Hackathon</p>
   <p style="margin-top:8px;font-size:12px;opacity:0.7">
     <a href="authority.html" style="color:white;text-decoration:none">🏛️ Authority Login</a>
@@ -133,6 +123,7 @@ footer>
 </footer>
 
 <script>
+  const BASE_URL = window.location.hostname.includes('github.io') ? 'https://airsafe-city.vercel.app' : '';
   let selectedSeverity = 0;
   let lastReport = null;
 
@@ -158,23 +149,15 @@ footer>
     btn.disabled = true;
     btn.innerText = "Submitting...";
 
-    const report = {
-      location,
-      pollutionType,
-      severity: selectedSeverity,
-      description,
-      reporterName
-    };
+    const report = { location, pollutionType, severity: selectedSeverity, description, reporterName };
 
     try {
-      const BASE_URL = window.location.hostname.includes('github.io') ? 'https://airsafe-hackaton.netlify.app' : '';
+      const res = await fetch(BASE_URL + "/api/reports", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(report)
       });
-
       const data = await res.json();
-
       if (data.success) {
         lastReport = data.report;
         document.getElementById("reportId").innerText = "#" + data.report.id;
@@ -199,15 +182,13 @@ footer>
 
   async function loadReports() {
     try {
-      const BASE_URL = window.location.hostname.includes('github.io') ? 'https://airsafe-hackaton.netlify.app' : '';
+      const res = await fetch(BASE_URL + "/api/reports");
       const data = await res.json();
       const reports = data.reports || [];
-
       if (reports.length === 0) {
         document.getElementById("reportsList").innerHTML = "<p style='color:#999;text-align:center'>No reports yet. Be the first to report!</p>";
         return;
       }
-
       document.getElementById("reportsList").innerHTML = reports.slice(0, 5).map(r => `
         <div class="report-card">
           <div class="report-location">📍 ${r.location}</div>
