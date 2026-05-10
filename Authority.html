@@ -134,7 +134,7 @@
 
   async function loadAllReports() {
     try {
-      const res = await fetch("/.netlify/functions/reports");
+      const BASE_URL = window.location.hostname.includes
       const data = await res.json();
       allReports = data.reports || [];
 
@@ -174,7 +174,7 @@
   async function updateStatus(index, status) {
     allReports[index].status = status;
     try {
-      await fetch("/.netlify/functions/reports", {
+      const BASE_URL = window.location.hostname.includes
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ updateAll: true, reports: allReports })
