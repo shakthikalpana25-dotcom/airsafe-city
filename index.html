@@ -154,10 +154,11 @@
     return "🤔 Great question! Try asking about AQI, PM2.5, masks, or how to protect yourself from pollution. You can also search your city above for live data!";
   }
 
+  const BASE_URL = window.location.hostname.includes('github.io') ? 'https://airsafe-hackaton.netlify.app' : '';
   // gemini AI call (via Netlify - no CORS!)
 async function callAI(prompt) {
   try {
-    const res = await fetch("/.netlify/functions/gemini", {
+    const res = await fetch(BASE_URL + "/.netlify/functions/gemini", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ prompt })
