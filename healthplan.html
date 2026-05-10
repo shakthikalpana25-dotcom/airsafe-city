@@ -230,15 +230,113 @@
 </head>
 <body>
 
+<!-- NAVBAR -->
 <nav>
   <a href="index.html" class="logo">🌬️ AirSafe City</a>
-  <div class="nav-links">
-    <a href="index.html">Home</a>
-    <a href="map.html">AQI Pulse</a>
-    <a href="healthplan.html">Health Plan</a>
-    <a href="report.html">Report</a>
+  <button class="hamburger" onclick="toggleMenu()">☰</button>
+  <div class="nav-menu" id="navMenu">
+    <a href="index.html">🏠 Home</a>
+    <a href="map.html">🗺️ AQI Pulse</a>
+    <a href="healthplan.html">💊 Health Plan</a>
+    <a href="report.html">📢 Report</a>
+    <a href="settings.html">⚙️ Settings</a>
+    <button class="nav-close" onclick="toggleMenu()">✕ Close</button>
   </div>
+  <div class="nav-overlay" id="navOverlay" onclick="toggleMenu()"></div>
 </nav>
+
+<style>
+  nav {
+    background: #0d1117;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #1a73e8;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+
+  .logo {
+    color: #1a73e8;
+    font-size: 20px;
+    font-weight: bold;
+    text-decoration: none;
+  }
+
+  .hamburger {
+    background: none;
+    border: 1px solid #1a73e8;
+    color: #1a73e8;
+    font-size: 20px;
+    padding: 5px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .nav-menu {
+    position: fixed;
+    top: 0;
+    right: -280px;
+    width: 260px;
+    height: 100vh;
+    background: #0d1117;
+    border-left: 1px solid #1a73e8;
+    display: flex;
+    flex-direction: column;
+    padding: 30px 20px;
+    gap: 5px;
+    transition: right 0.3s ease;
+    z-index: 9999;
+  }
+
+  .nav-menu.open { right: 0; }
+
+  .nav-menu a {
+    color: #e0e0e0;
+    text-decoration: none;
+    padding: 14px 15px;
+    border-radius: 10px;
+    font-size: 15px;
+    border: 1px solid transparent;
+  }
+
+  .nav-menu a:hover {
+    background: #0a1628;
+    border-color: #1a73e8;
+    color: #1a73e8;
+  }
+
+  .nav-close {
+    background: none;
+    border: 1px solid #f44336;
+    color: #f44336;
+    padding: 10px 15px;
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+
+  .nav-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 9998;
+  }
+
+  .nav-overlay.open { display: block; }
+</style>
+
+<script>
+  function toggleMenu() {
+    document.getElementById("navMenu").classList.toggle("open");
+    document.getElementById("navOverlay").classList.toggle("open");
+  }
+</script>
 
 <div class="page-header">
   <span class="highlight-badge">⚡ AI Powered</span>
