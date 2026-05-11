@@ -6,43 +6,71 @@
   <title>Report Pollution - AirSafe City</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-    body { background: #f0f4f8; }
-    nav { background-color: #1a73e8; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
-    .logo { color: white; font-size: 20px; font-weight: bold; text-decoration: none; }
-    .nav-links a { color: white; text-decoration: none; margin-left: 15px; font-size: 14px; }
-    .page-header { background: linear-gradient(135deg, #1a73e8, #0d47a1); color: white; text-align: center; padding: 30px 20px; }
-    .page-header h1 { font-size: 28px; margin-bottom: 5px; }
-    .page-header p { font-size: 14px; opacity: 0.9; }
-    .form-section { background: white; margin: 20px; border-radius: 15px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-    .form-section h2 { color: #1a73e8; margin-bottom: 20px; }
+
+    body { background: #0a0e1a; color: #e0e0e0; }
+
+    nav { background: #0d1117; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1a73e8; position: sticky; top: 0; z-index: 1000; }
+    .logo { color: #1a73e8; font-size: 20px; font-weight: bold; text-decoration: none; }
+    .hamburger { background: none; border: 1px solid #1a73e8; color: #1a73e8; font-size: 20px; padding: 5px 12px; border-radius: 8px; cursor: pointer; }
+    .nav-menu { position: fixed; top: 0; right: -280px; width: 260px; height: 100vh; background: #0d1117; border-left: 1px solid #1a73e8; display: flex; flex-direction: column; padding: 30px 20px; gap: 5px; transition: right 0.3s ease; z-index: 9999; }
+    .nav-menu.open { right: 0; }
+    .nav-menu a { color: #e0e0e0; text-decoration: none; padding: 14px 15px; border-radius: 10px; font-size: 15px; border: 1px solid transparent; }
+    .nav-menu a:hover { background: #0a1628; border-color: #1a73e8; color: #1a73e8; }
+    .nav-close { background: none; border: 1px solid #f44336; color: #f44336; padding: 10px 15px; border-radius: 10px; font-size: 14px; cursor: pointer; margin-top: 10px; }
+    .nav-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9998; }
+    .nav-overlay.open { display: block; }
+
+    .page-header { background: linear-gradient(135deg, #0d1117, #0a1628); border-bottom: 1px solid #1a2535; color: white; text-align: center; padding: 35px 20px; }
+    .page-header h1 { font-size: 26px; margin-bottom: 8px; color: white; }
+    .page-header p { font-size: 13px; color: #888; }
+
+    .form-section { background: #0d1117; border: 1px solid #1a2535; margin: 20px; border-radius: 15px; padding: 25px; position: relative; }
+    .form-section::before { content: ""; position: absolute; top: 0; left: 20px; width: 40px; height: 2px; background: #1a73e8; border-radius: 2px; }
+    .form-section h2 { color: #e0e0e0; margin-bottom: 20px; font-size: 16px; }
+    .form-section h2 span { color: #1a73e8; }
+
     .form-group { margin-bottom: 15px; }
-    .form-group label { display: block; font-weight: bold; color: #333; margin-bottom: 5px; font-size: 14px; }
-    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 14px; outline: none; }
+    .form-group label { display: block; font-weight: bold; color: #888; margin-bottom: 6px; font-size: 13px; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 15px; background: #0a0e1a; border: 1px solid #1a2535; border-radius: 10px; color: #e0e0e0; font-size: 14px; outline: none; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #1a73e8; }
+    .form-group select option { background: #0d1117; }
     .form-group textarea { height: 100px; resize: none; }
+
     .severity-buttons { display: flex; gap: 8px; }
-    .severity-btn { flex: 1; padding: 10px; border: 2px solid #e0e0e0; border-radius: 10px; background: white; font-size: 16px; cursor: pointer; text-align: center; }
-    .severity-btn.selected { border-color: #1a73e8; background: #e8f0fe; }
-    .submit-btn { width: 100%; padding: 15px; background: #1a73e8; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-    .submit-btn:disabled { background: #ccc; }
-    .success-msg { background: #e8f5e9; border: 2px solid #34a853; border-radius: 10px; padding: 20px; text-align: center; display: none; margin-top: 15px; }
+    .severity-btn { flex: 1; padding: 10px; border: 1px solid #1a2535; border-radius: 10px; background: #0a0e1a; color: #888; font-size: 14px; cursor: pointer; text-align: center; }
+    .severity-btn.selected { border-color: #1a73e8; background: #0a1628; color: #1a73e8; font-weight: bold; }
+
+    .submit-btn { width: 100%; padding: 15px; background: linear-gradient(135deg, #1a73e8, #0d47a1); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; letter-spacing: 1px; }
+    .submit-btn:disabled { background: #1a2535; color: #555; }
+
+    .success-msg { background: #0a1a0f; border: 1px solid #34a853; border-radius: 10px; padding: 20px; text-align: center; display: none; margin-top: 15px; }
     .success-msg h3 { color: #34a853; margin-bottom: 10px; }
-    .email-section { background: #fff3e0; border: 2px solid #ff9800; border-radius: 10px; padding: 15px; margin-top: 15px; display: none; }
-    .email-section h3 { color: #ff9800; margin-bottom: 10px; }
-    .email-btn { background: #ff9800; color: white; border: none; padding: 10px 20px; border-radius: 10px; font-size: 14px; cursor: pointer; margin-top: 10px; }
-    .recent-reports { background: white; margin: 20px; border-radius: 15px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-    .recent-reports h2 { color: #1a73e8; margin-bottom: 15px; }
-    .report-card { background: #f8f9fa; border-radius: 10px; padding: 15px; margin-bottom: 10px; border-left: 4px solid #1a73e8; }
-    .report-card .report-location { font-weight: bold; color: #333; }
-    .report-card .report-type { color: #666; font-size: 13px; margin: 5px 0; }
-    .report-card .report-status { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
-    .status-pending { background: #fff3e0; color: #ff9800; }
-    .status-investigating { background: #e3f2fd; color: #1a73e8; }
-    .status-resolved { background: #e8f5e9; color: #34a853; }
-    footer { background-color: #1a73e8; color: white; text-align: center; padding: 20px; margin-top: 20px; }
+    .success-msg p { color: #888; font-size: 13px; }
+
+    .email-section { background: #1a110a; border: 1px solid #ff9800; border-radius: 10px; padding: 15px; margin-top: 15px; display: none; }
+    .email-section h3 { color: #ff9800; margin-bottom: 10px; font-size: 15px; }
+    .email-section p { color: #888; font-size: 13px; }
+    .email-btn { background: #ff9800; color: white; border: none; padding: 10px 20px; border-radius: 10px; font-size: 14px; cursor: pointer; margin-top: 10px; font-weight: bold; }
+
+    .recent-reports { background: #0d1117; border: 1px solid #1a2535; margin: 20px; border-radius: 15px; padding: 25px; position: relative; }
+    .recent-reports::before { content: ""; position: absolute; top: 0; left: 20px; width: 40px; height: 2px; background: #1a73e8; border-radius: 2px; }
+    .recent-reports h2 { color: #e0e0e0; margin-bottom: 15px; font-size: 16px; }
+
+    .report-card { background: #0a0e1a; border: 1px solid #1a2535; border-left: 3px solid #1a73e8; border-radius: 10px; padding: 15px; margin-bottom: 10px; }
+    .report-card .report-location { font-weight: bold; color: #e0e0e0; font-size: 14px; }
+    .report-card .report-type { color: #888; font-size: 13px; margin: 5px 0; }
+    .report-card .report-status { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; margin-top: 5px; }
+    .status-pending { background: #1a110a; color: #ff9800; border: 1px solid #ff9800; }
+    .status-investigating { background: #0a1628; color: #1a73e8; border: 1px solid #1a73e8; }
+    .status-resolved { background: #0a1a0f; color: #34a853; border: 1px solid #34a853; }
+
+    footer { background: #0d1117; color: #555; text-align: center; padding: 25px 20px; margin-top: 20px; border-top: 1px solid #1a2535; font-size: 13px; }
+    footer a { color: #1a73e8; text-decoration: none; }
   </style>
 </head>
 <body>
-  <!-- NAVBAR -->
+
+<!-- NAVBAR -->
 <nav>
   <a href="index.html" class="logo">🌬️ AirSafe City</a>
   <button class="hamburger" onclick="toggleMenu()">☰</button>
@@ -57,106 +85,13 @@
   <div class="nav-overlay" id="navOverlay" onclick="toggleMenu()"></div>
 </nav>
 
-<style>
-  nav {
-    background: #0d1117;
-    padding: 15px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #1a73e8;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-  }
-
-  .logo {
-    color: #1a73e8;
-    font-size: 20px;
-    font-weight: bold;
-    text-decoration: none;
-  }
-
-  .hamburger {
-    background: none;
-    border: 1px solid #1a73e8;
-    color: #1a73e8;
-    font-size: 20px;
-    padding: 5px 12px;
-    border-radius: 8px;
-    cursor: pointer;
-  }
-
-  .nav-menu {
-    position: fixed;
-    top: 0;
-    right: -280px;
-    width: 260px;
-    height: 100vh;
-    background: #0d1117;
-    border-left: 1px solid #1a73e8;
-    display: flex;
-    flex-direction: column;
-    padding: 30px 20px;
-    gap: 5px;
-    transition: right 0.3s ease;
-    z-index: 9999;
-  }
-
-  .nav-menu.open { right: 0; }
-
-  .nav-menu a {
-    color: #e0e0e0;
-    text-decoration: none;
-    padding: 14px 15px;
-    border-radius: 10px;
-    font-size: 15px;
-    border: 1px solid transparent;
-  }
-
-  .nav-menu a:hover {
-    background: #0a1628;
-    border-color: #1a73e8;
-    color: #1a73e8;
-  }
-
-  .nav-close {
-    background: none;
-    border: 1px solid #f44336;
-    color: #f44336;
-    padding: 10px 15px;
-    border-radius: 10px;
-    font-size: 14px;
-    cursor: pointer;
-    margin-top: 10px;
-  }
-
-  .nav-overlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.5);
-    z-index: 9998;
-  }
-
-  .nav-overlay.open { display: block; }
-</style>
-
-<script>
-  function toggleMenu() {
-    document.getElementById("navMenu").classList.toggle("open");
-    document.getElementById("navOverlay").classList.toggle("open");
-  }
-</script>
-
 <div class="page-header">
   <h1>📢 Report Pollution</h1>
   <p>Help authorities take action — report pollution in your area</p>
 </div>
 
 <div class="form-section">
-  <h2>🏭 Submit Pollution Report</h2>
+  <h2>🏭 Submit <span>Pollution Report</span></h2>
   <div class="form-group">
     <label>📍 Your Location</label>
     <input type="text" id="location" placeholder="eg: Koramangala, Bengaluru">
@@ -196,11 +131,11 @@
   <div class="success-msg" id="successMsg">
     <h3>✅ Report Submitted Successfully!</h3>
     <p>Your report has been saved and will be reviewed by authorities.</p>
-    <p style="margin-top:8px;font-size:13px;color:#666">Report ID: <span id="reportId"></span></p>
+    <p style="margin-top:8px;font-size:13px;">Report ID: <span id="reportId" style="color:#1a73e8;font-weight:bold;"></span></p>
   </div>
   <div class="email-section" id="emailSection">
     <h3>📧 Also notify CPCB directly?</h3>
-    <p style="font-size:13px;color:#666">Send this report to Central Pollution Control Board via email</p>
+    <p>Send this report to Central Pollution Control Board via email</p>
     <button class="email-btn" onclick="sendEmail()">📧 Open Email to CPCB</button>
   </div>
 </div>
@@ -208,18 +143,23 @@
 <div class="recent-reports">
   <h2>📋 Recent Community Reports</h2>
   <div id="reportsList">
-    <p style="color:#999;text-align:center">Loading reports...</p>
+    <p style="color:#555;text-align:center">Loading reports...</p>
   </div>
 </div>
 
 <footer>
   <p>© 2026 AirSafe City | Team Vertex Systems | WitchHunt Hackathon</p>
-  <p style="margin-top:8px;font-size:12px;opacity:0.7">
-    <a href="authority.html" style="color:white;text-decoration:none">🏛️ Authority Login</a>
+  <p style="margin-top:8px;">
+    <a href="authority.html">🏛️ Authority Login</a>
   </p>
 </footer>
 
 <script>
+  function toggleMenu() {
+    document.getElementById("navMenu").classList.toggle("open");
+    document.getElementById("navOverlay").classList.toggle("open");
+  }
+
   const BASE_URL = window.location.hostname.includes('github.io') ? 'https://airsafe-city.vercel.app' : '';
   let selectedSeverity = 0;
   let lastReport = null;
@@ -283,7 +223,7 @@
       const data = await res.json();
       const reports = data.reports || [];
       if (reports.length === 0) {
-        document.getElementById("reportsList").innerHTML = "<p style='color:#999;text-align:center'>No reports yet. Be the first to report!</p>";
+        document.getElementById("reportsList").innerHTML = "<p style='color:#555;text-align:center'>No reports yet. Be the first to report!</p>";
         return;
       }
       document.getElementById("reportsList").innerHTML = reports.slice(0, 5).map(r => `
@@ -296,7 +236,7 @@
         </div>
       `).join("");
     } catch(err) {
-      document.getElementById("reportsList").innerHTML = "<p style='color:#999;text-align:center'>Could not load reports.</p>";
+      document.getElementById("reportsList").innerHTML = "<p style='color:#555;text-align:center'>Could not load reports.</p>";
     }
   }
 
