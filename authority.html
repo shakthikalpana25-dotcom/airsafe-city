@@ -6,41 +6,73 @@
   <title>Authority Dashboard - AirSafe City</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-    body { background: #f0f4f8; }
-    nav { background-color: #1a73e8; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
-    .logo { color: white; font-size: 20px; font-weight: bold; text-decoration: none; }
-    .nav-links a { color: white; text-decoration: none; margin-left: 15px; font-size: 14px; }
+
+    body { background: #0a0e1a; color: #e0e0e0; }
+
+    nav { background: #0d1117; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1a73e8; position: sticky; top: 0; z-index: 1000; }
+    .logo { color: #1a73e8; font-size: 20px; font-weight: bold; text-decoration: none; }
+    .hamburger { background: none; border: 1px solid #1a73e8; color: #1a73e8; font-size: 20px; padding: 5px 12px; border-radius: 8px; cursor: pointer; }
+    .nav-menu { position: fixed; top: 0; right: -280px; width: 260px; height: 100vh; background: #0d1117; border-left: 1px solid #1a73e8; display: flex; flex-direction: column; padding: 30px 20px; gap: 5px; transition: right 0.3s ease; z-index: 9999; }
+    .nav-menu.open { right: 0; }
+    .nav-menu a { color: #e0e0e0; text-decoration: none; padding: 14px 15px; border-radius: 10px; font-size: 15px; border: 1px solid transparent; }
+    .nav-menu a:hover { background: #0a1628; border-color: #1a73e8; color: #1a73e8; }
+    .nav-close { background: none; border: 1px solid #f44336; color: #f44336; padding: 10px 15px; border-radius: 10px; font-size: 14px; cursor: pointer; margin-top: 10px; }
+    .nav-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9998; }
+    .nav-overlay.open { display: block; }
+
+    /* LOGIN */
     .login-screen { display: flex; justify-content: center; align-items: center; min-height: 80vh; }
-    .login-card { background: white; border-radius: 20px; padding: 40px 30px; width: 90%; max-width: 400px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); text-align: center; }
-    .login-card h2 { color: #1a73e8; margin-bottom: 5px; font-size: 24px; }
+    .login-card { background: #0d1117; border: 1px solid #1a2535; border-radius: 20px; padding: 40px 30px; width: 90%; max-width: 400px; text-align: center; position: relative; }
+    .login-card::before { content: ""; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 60px; height: 2px; background: #1a73e8; border-radius: 2px; }
+    .login-card h2 { color: #e0e0e0; margin-bottom: 5px; font-size: 24px; }
     .login-card p { color: #666; margin-bottom: 25px; font-size: 14px; }
-    .login-card input { width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px; outline: none; margin-bottom: 15px; text-align: center; letter-spacing: 3px; }
-    .login-btn { width: 100%; padding: 14px; background: #1a73e8; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
+    .login-card input { width: 100%; padding: 12px 15px; background: #0a0e1a; border: 1px solid #1a2535; border-radius: 10px; color: #e0e0e0; font-size: 16px; outline: none; margin-bottom: 15px; text-align: center; letter-spacing: 3px; }
+    .login-card input:focus { border-color: #1a73e8; }
+    .login-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #1a73e8, #0d47a1); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
     .login-error { color: #f44336; font-size: 13px; margin-top: 10px; display: none; }
+
+    /* DASHBOARD */
     .dashboard { display: none; }
-    .dash-header { background: linear-gradient(135deg, #1a73e8, #0d47a1); color: white; padding: 25px 20px; }
-    .dash-header h1 { font-size: 24px; margin-bottom: 5px; }
-    .stats-row { display: flex; gap: 15px; padding: 20px; overflow-x: auto; }
-    .stat-card { background: white; border-radius: 15px; padding: 20px; min-width: 120px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .dash-header { background: linear-gradient(135deg, #0d1117, #0a1628); border-bottom: 1px solid #1a2535; color: white; padding: 25px 20px; display: flex; justify-content: space-between; align-items: center; }
+    .dash-header h1 { font-size: 22px; margin-bottom: 5px; }
+    .dash-header p { font-size: 13px; color: #888; }
+    .logout-btn { background: none; border: 1px solid #f44336; color: #f44336; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 13px; display: none; }
+
+    .stats-row { display: flex; gap: 12px; padding: 20px; overflow-x: auto; }
+    .stat-card { background: #0d1117; border: 1px solid #1a2535; border-radius: 15px; padding: 20px; min-width: 110px; text-align: center; flex-shrink: 0; }
     .stat-number { font-size: 32px; font-weight: bold; color: #1a73e8; }
     .stat-label { font-size: 12px; color: #666; margin-top: 5px; }
-    .reports-section { background: white; margin: 20px; border-radius: 15px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-    .reports-section h2 { color: #1a73e8; margin-bottom: 15px; }
-    .report-card { background: #f8f9fa; border-radius: 10px; padding: 15px; margin-bottom: 10px; border-left: 4px solid #1a73e8; }
+
+    .reports-section { background: #0d1117; border: 1px solid #1a2535; margin: 20px; border-radius: 15px; padding: 20px; position: relative; }
+    .reports-section::before { content: ""; position: absolute; top: 0; left: 20px; width: 40px; height: 2px; background: #1a73e8; border-radius: 2px; }
+    .reports-section h2 { color: #e0e0e0; margin-bottom: 15px; font-size: 16px; }
+
+    .report-card { background: #0a0e1a; border: 1px solid #1a2535; border-left: 3px solid #1a73e8; border-radius: 10px; padding: 15px; margin-bottom: 10px; }
     .report-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-    .report-location { font-weight: bold; color: #333; }
-    .report-type { color: #666; font-size: 13px; margin: 3px 0; }
-    .report-status { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
-    .status-pending { background: #fff3e0; color: #ff9800; }
-    .status-investigating { background: #e3f2fd; color: #1a73e8; }
-    .status-resolved { background: #e8f5e9; color: #34a853; }
-    .action-buttons { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
-    .action-btn { padding: 6px 12px; border: none; border-radius: 20px; font-size: 12px; cursor: pointer; font-weight: bold; }
-    .btn-investigate { background: #e3f2fd; color: #1a73e8; }
-    .btn-resolve { background: #e8f5e9; color: #34a853; }
-    .btn-email { background: #fff3e0; color: #ff9800; }
-    .logout-btn { background: rgba(255,255,255,0.2); color: white; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 13px; }
-    footer { background-color: #1a73e8; color: white; text-align: center; padding: 20px; margin-top: 20px; }
+    .report-location { font-weight: bold; color: #e0e0e0; font-size: 14px; }
+    .report-type { color: #888; font-size: 13px; margin: 3px 0; }
+    .report-status { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; flex-shrink: 0; margin-left: 10px; }
+    .status-pending { background: #1a110a; color: #ff9800; border: 1px solid #ff9800; }
+    .status-investigating { background: #0a1628; color: #1a73e8; border: 1px solid #1a73e8; }
+    .status-resolved { background: #0a1a0f; color: #34a853; border: 1px solid #34a853; }
+
+    .action-buttons { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+    .action-btn { padding: 7px 14px; border: none; border-radius: 20px; font-size: 12px; cursor: pointer; font-weight: bold; }
+    .btn-investigate { background: #0a1628; color: #1a73e8; border: 1px solid #1a73e8; }
+    .btn-resolve { background: #0a1a0f; color: #34a853; border: 1px solid #34a853; }
+    .btn-email { background: #1a110a; color: #ff9800; border: 1px solid #ff9800; }
+
+    /* PUBLIC NOTICE SECTION */
+    .notice-section { background: #0a1a0f; border: 1px solid #34a853; margin: 20px; border-radius: 15px; padding: 20px; }
+    .notice-section h2 { color: #34a853; margin-bottom: 5px; font-size: 16px; }
+    .notice-section p { color: #888; font-size: 13px; margin-bottom: 15px; }
+    .notice-input-row { display: flex; gap: 10px; }
+    .notice-input-row input { flex: 1; padding: 10px 15px; background: #0a0e1a; border: 1px solid #1a2535; border-radius: 10px; color: #e0e0e0; font-size: 14px; outline: none; }
+    .notice-input-row input:focus { border-color: #34a853; }
+    .notice-input-row button { padding: 10px 18px; background: #34a853; color: white; border: none; border-radius: 10px; font-size: 13px; cursor: pointer; font-weight: bold; }
+    .notice-result { margin-top: 15px; padding: 15px; background: #0a0e1a; border-radius: 10px; border: 1px solid #1a2535; display: none; font-size: 14px; }
+
+    footer { background: #0d1117; color: #555; text-align: center; padding: 25px 20px; margin-top: 20px; border-top: 1px solid #1a2535; font-size: 13px; }
   </style>
 </head>
 <body>
@@ -60,99 +92,7 @@
   <div class="nav-overlay" id="navOverlay" onclick="toggleMenu()"></div>
 </nav>
 
-<style>
-  nav {
-    background: #0d1117;
-    padding: 15px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #1a73e8;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-  }
-
-  .logo {
-    color: #1a73e8;
-    font-size: 20px;
-    font-weight: bold;
-    text-decoration: none;
-  }
-
-  .hamburger {
-    background: none;
-    border: 1px solid #1a73e8;
-    color: #1a73e8;
-    font-size: 20px;
-    padding: 5px 12px;
-    border-radius: 8px;
-    cursor: pointer;
-  }
-
-  .nav-menu {
-    position: fixed;
-    top: 0;
-    right: -280px;
-    width: 260px;
-    height: 100vh;
-    background: #0d1117;
-    border-left: 1px solid #1a73e8;
-    display: flex;
-    flex-direction: column;
-    padding: 30px 20px;
-    gap: 5px;
-    transition: right 0.3s ease;
-    z-index: 9999;
-  }
-
-  .nav-menu.open { right: 0; }
-
-  .nav-menu a {
-    color: #e0e0e0;
-    text-decoration: none;
-    padding: 14px 15px;
-    border-radius: 10px;
-    font-size: 15px;
-    border: 1px solid transparent;
-  }
-
-  .nav-menu a:hover {
-    background: #0a1628;
-    border-color: #1a73e8;
-    color: #1a73e8;
-  }
-
-  .nav-close {
-    background: none;
-    border: 1px solid #f44336;
-    color: #f44336;
-    padding: 10px 15px;
-    border-radius: 10px;
-    font-size: 14px;
-    cursor: pointer;
-    margin-top: 10px;
-  }
-
-  .nav-overlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.5);
-    z-index: 9998;
-  }
-
-  .nav-overlay.open { display: block; }
-</style>
-
-<script>
-  function toggleMenu() {
-    document.getElementById("navMenu").classList.toggle("open");
-    document.getElementById("navOverlay").classList.toggle("open");
-  }
-</script>
-
+<!-- LOGIN SCREEN -->
 <div class="login-screen" id="loginScreen">
   <div class="login-card">
     <div style="font-size:50px;margin-bottom:15px">🏛️</div>
@@ -164,11 +104,16 @@
   </div>
 </div>
 
+<!-- DASHBOARD -->
 <div class="dashboard" id="dashboard">
   <div class="dash-header">
-    <h1>🏛️ Authority Dashboard</h1>
-    <p>Pollution Control Officer Panel — AirSafe City</p>
+    <div>
+      <h1>🏛️ Authority Dashboard</h1>
+      <p>Pollution Control Officer Panel — AirSafe City</p>
+    </div>
+    <button class="logout-btn" id="logoutBtn" onclick="logout()">🚪 Logout</button>
   </div>
+
   <div class="stats-row">
     <div class="stat-card">
       <div class="stat-number" id="totalCount">0</div>
@@ -187,10 +132,22 @@
       <div class="stat-label">Resolved</div>
     </div>
   </div>
+
+  <!-- PUBLIC NOTICE TRACKER -->
+  <div class="notice-section">
+    <h2>🔍 Track Public Report Status</h2>
+    <p>Citizens can check their report status using their Report ID</p>
+    <div class="notice-input-row">
+      <input type="text" id="trackId" placeholder="Enter Report ID eg: #1234567890">
+      <button onclick="trackReport()">Track</button>
+    </div>
+    <div class="notice-result" id="trackResult"></div>
+  </div>
+
   <div class="reports-section">
     <h2>📋 All Pollution Reports</h2>
     <div id="allReports">
-      <p style="color:#999;text-align:center">Loading reports...</p>
+      <p style="color:#555;text-align:center">Loading reports...</p>
     </div>
   </div>
 </div>
@@ -200,6 +157,11 @@
 </footer>
 
 <script>
+  function toggleMenu() {
+    document.getElementById("navMenu").classList.toggle("open");
+    document.getElementById("navOverlay").classList.toggle("open");
+  }
+
   const BASE_URL = window.location.hostname.includes('github.io') ? 'https://airsafe-city.vercel.app' : '';
   const PASSWORD = "airsafe2026";
   let allReports = [];
@@ -223,6 +185,36 @@
     document.getElementById("passwordInput").value = "";
   }
 
+  // Track report by ID
+  function trackReport() {
+    const input = document.getElementById("trackId").value.trim().replace("#", "");
+    const result = document.getElementById("trackResult");
+
+    if (!input) { alert("Please enter a Report ID!"); return; }
+
+    const found = allReports.find(r => String(r.id) === input);
+
+    if (found) {
+      const statusColor = found.status === "Resolved" ? "#34a853" : found.status === "Investigating" ? "#1a73e8" : "#ff9800";
+      const statusEmoji = found.status === "Resolved" ? "✅" : found.status === "Investigating" ? "🔍" : "⏳";
+      result.style.display = "block";
+      result.innerHTML = `
+        <div style="margin-bottom:10px">
+          <strong style="color:#e0e0e0">📍 ${found.location}</strong><br>
+          <span style="color:#888;font-size:13px">🏭 ${found.pollutionType} • Severity: ${"⭐".repeat(found.severity)}</span>
+        </div>
+        <div style="font-size:13px;color:#888;margin-bottom:10px">🕐 Reported: ${found.timestamp}</div>
+        <div style="font-size:16px;font-weight:bold;color:${statusColor}">${statusEmoji} Status: ${found.status}</div>
+        ${found.status === "Resolved" ? "<div style='margin-top:8px;font-size:13px;color:#34a853'>✅ This issue has been resolved by authorities. Thank you for reporting!</div>" : ""}
+        ${found.status === "Investigating" ? "<div style='margin-top:8px;font-size:13px;color:#1a73e8'>🔍 Authorities are actively investigating this issue.</div>" : ""}
+        ${found.status === "Pending" ? "<div style='margin-top:8px;font-size:13px;color:#ff9800'>⏳ Your report is pending review by authorities.</div>" : ""}
+      `;
+    } else {
+      result.style.display = "block";
+      result.innerHTML = "<span style='color:#f44336'>❌ Report ID not found. Please check and try again.</span>";
+    }
+  }
+
   async function loadAllReports() {
     try {
       const res = await fetch(BASE_URL + "/api/reports");
@@ -235,7 +227,7 @@
       document.getElementById("resolvedCount").innerText = allReports.filter(r => r.status === "Resolved").length;
 
       if (allReports.length === 0) {
-        document.getElementById("allReports").innerHTML = "<p style='color:#999;text-align:center'>No reports yet!</p>";
+        document.getElementById("allReports").innerHTML = "<p style='color:#555;text-align:center'>No reports yet!</p>";
         return;
       }
 
@@ -258,7 +250,7 @@
         </div>
       `).join("");
     } catch(err) {
-      document.getElementById("allReports").innerHTML = "<p style='color:#999;text-align:center'>Error loading reports.</p>";
+      document.getElementById("allReports").innerHTML = "<p style='color:#555;text-align:center'>Error loading reports.</p>";
     }
   }
 
